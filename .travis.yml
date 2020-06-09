@@ -1,0 +1,101 @@
+os:
+  - linux
+
+language:
+  - minimal
+
+services:
+  - docker
+
+# Container setup.
+before_install:
+  - |
+    docker build -t ci-image - <<EOF
+      FROM jjmerelo/alpine-raku
+
+      RUN ["apk", "add", "--no-cache", "bash"]
+
+      # Install vic2-companion & optional dependency
+      RUN curl --output vic2-companion.zip -L 'https://github.com/moretrim/pds-companion/archive/0.2.0-alpha+20191122.zip' \
+          && unzip vic2-companion.zip                                                                                      \
+          && zef install --/test Terminal::ANSIColor                                                                       \
+          && cd pds-companion-*                                                                                            \
+          && zef install --/test .
+
+      RUN mkdir /ci-root
+      VOLUME /ci-root
+      WORKDIR /ci-root
+
+      # skip here-document terminator due to Travis silliness; produces a warning
+  - docker images
+
+matrix:
+  include:
+    -
+      if: type = pull_request
+      name: "Merge Check"
+      script: |
+        docker run -t                           \
+          --name container-env                  \
+          --env TRAVIS_COMMIT_RANGE             \
+          --volume "$TRAVIS_BUILD_DIR":/ci-root \
+          --entrypoint bash                     \
+          ci-image -c '
+            # fail on first error
+            set -Eeuo pipefail
+
+            # compute difference
+            readarray -d "" pr_files < <(git diff-tree --no-commit-id --name-only -z --diff-filter=AM -r "$TRAVIS_COMMIT_RANGE" -- country-workshop/)
+            if (( "${#pr_files[@]}" == 0 )) ; then
+              echo "No mod files to test."
+              exit
+            fi
+
+            echo   "## PR: fresh mod files ##"
+            printf "    %q\n" "${pr_files[@]}"
+
+            # run static analysis
+            vic2-companion --color=always --heartbeat --remarks=opinion --base=country-workshop "${pr_files[@]/country-workshop\//}"
+          '
+
+    -
+      if: type = push
+      name: "Commit Check"
+      script: |
+        docker run -t                           \
+          --name container-env                  \
+          --volume "$TRAVIS_BUILD_DIR":/ci-root \
+          --entrypoint bash                     \
+          ci-image -c '
+            # fail on first error
+            set -Eeuo pipefail
+
+            # compute difference
+            readarray -d "" commit_files < <(git diff-tree --no-commit-id --name-only -z --diff-filter=AM -r --root HEAD -- country-workshop/)
+            if (( "${#commit_files[@]}" == 0 )) ; then
+              echo "No mod files to test."
+              exit
+            fi
+
+            echo   "## Commit: fresh mod files ##"
+            printf "    %q\n" "${commit_files[@]}"
+
+            # run static analysis
+            vic2-companion --color=always --heartbeat --remarks=opinion --base=country-workshop "${commit_files[@]/country-workshop\//}"
+          '
+
+    -
+      if: type = push
+      name: "Branch Check"
+      script: |
+        docker run -t                           \
+          --name container-env                  \
+          --volume "$TRAVIS_BUILD_DIR":/ci-root \
+          --entrypoint bash                     \
+          ci-image -c '
+            # fail on first error
+            set -Eeuo pipefail
+
+            # run static analysis
+            vic2-companion --color=always --heartbeat --base=country-workshop .
+          '
