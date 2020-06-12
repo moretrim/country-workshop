@@ -1,0 +1,107 @@
+country_event = {
+    id    = 678000
+    title = country-workshop.enable-gotland.name
+    desc  = country-workshop.enable-gotland.desc
+
+    is_triggered_only = yes
+
+    immediate = {
+        set_global_flag = country-workshop.GOT-enabled
+
+        # Gotland province
+        331 = {
+            add_core = GOT
+        }
+
+        random_country = {
+            limit = {
+                has_country_flag = country-workshop.new-start
+                tag = FROM
+            }
+
+            country_event = 678001
+        }
+    }
+
+    option = {
+        name = country-workshop.enable-gotland.opt0
+    }
+}
+
+# For various reasons we have to hardcode a separate 'new start' companion event for each enabling
+# event. As a mitigating factor, it is easy to duplicate: update the ID, change the capital in each
+# option, change the core revocation tag, change the tag in the final option, and reap the benefits
+# of...
+country_event = {
+    id    = 678001
+    # ...shared localisation
+    title = country-workshop.new-start.name
+    desc  = country-workshop.new-start.desc
+
+    is_triggered_only = yes
+    allow_multiple_instances = yes
+
+    option = {
+        name = country-workshop.new-start.opt0
+
+        ai_will_do = { factor = 1 }
+    }
+
+    option = {
+        name = country-workshop.new-start.opt1
+
+        FROM = {
+            all_core = {
+                remove_core = SWE
+            }
+        }
+
+        331 = {
+            owner = {
+                release_vassal = FROM
+            }
+        }
+
+        ai_will_do = { factor = 0 }
+    }
+
+    option = {
+        name = country-workshop.new-start.opt2
+
+        FROM = {
+            all_core = {
+                remove_core = SWE
+            }
+        }
+
+        331 = {
+            owner = {
+                release_vassal = FROM
+                release_vassal = FROM
+            }
+        }
+
+        ai_will_do = { factor = 0 }
+    }
+
+    option = {
+        name = country-workshop.new-start.opt3
+
+        FROM = {
+            all_core = {
+                remove_core = SWE
+            }
+        }
+
+        331 = {
+            owner = {
+                release_vassal = FROM
+                release_vassal = FROM
+            }
+        }
+
+        change_tag_no_core_switch = GOT
+
+        ai_will_do = { factor = 0 }
+    }
+}

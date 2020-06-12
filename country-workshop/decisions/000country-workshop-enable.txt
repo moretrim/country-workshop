@@ -1,0 +1,199 @@
+political_decisions = {
+    country-workshop.show = {
+        alert = no
+
+        potential = {
+            NOT = { year = 1837 }
+            NOT = { has_country_flag = country-workshop.showing }
+
+            NOT = {
+                has_global_flag = country-workshop.GOT-enabled
+            }
+        }
+
+        allow = {
+            NOT = {
+                year = 1837
+                month = 1
+            }
+        }
+
+        effect = {
+            set_country_flag = country-workshop.showing
+        }
+
+        ai_will_do = { factor = 0 }
+    }
+
+    country-workshop.hide = {
+        alert = no
+
+        potential = {
+            NOT = { year = 1837 }
+            has_country_flag = country-workshop.showing
+
+            NOT = {
+                AND = {
+                    has_global_flag = country-workshop.GOT-enabled
+                }
+            }
+        }
+
+        allow = {
+            NOT = {
+                year = 1837
+                month = 1
+            }
+        }
+
+        effect = {
+            clr_country_flag = country-workshop.showing
+        }
+
+        ai_will_do = { factor = 0 }
+    }
+
+    country-workshop.start-everything = {
+        alert = no
+
+        potential = {
+            NOT = { year = 1837 }
+            has_country_flag = country-workshop.showing
+
+            NOT = {
+                AND = {
+                    has_global_flag = country-workshop.GOT-enabled
+                }
+            }
+        }
+
+        allow = {
+            NOT = {
+                year = 1837
+                month = 1
+            }
+        }
+
+        effect = {
+            set_country_flag = country-workshop.new-start
+
+            random_owned = { limit = { NOT = { has_global_flag = country-workshop.GOT-enabled } } GOT = { country_event = 678000 } }
+
+            clr_country_flag = country-workshop.new-start
+        }
+
+        ai_will_do = { factor = 0 }
+    }
+
+    country-workshop.enable-everything = {
+        alert = no
+
+        potential = {
+            NOT = { year = 1837 }
+            has_country_flag = country-workshop.showing
+
+            NOT = {
+                AND = {
+                    has_global_flag = country-workshop.GOT-enabled
+                }
+            }
+        }
+
+        allow = {
+            NOT = {
+                year = 1837
+                month = 1
+            }
+        }
+
+        effect = {
+            random_owned = { limit = { NOT = { has_global_flag = country-workshop.GOT-enabled } } GOT = { country_event = 678000 } }
+        }
+
+        ai_will_do = { factor = 0 }
+    }
+
+    country-workshop.vassal-everything = {
+        alert = no
+
+        potential = {
+            NOT = { year = 1837 }
+            has_country_flag = country-workshop.showing
+
+            NOT = {
+                AND = {
+                    has_global_flag = country-workshop.GOT-enabled
+                }
+            }
+        }
+
+        allow = {
+            NOT = {
+                year = 1837
+                month = 1
+            }
+        }
+
+        effect = {
+            set_global_flag = country-workshop.new-vassals
+            random_owned = { limit = { NOT = { has_global_flag = country-workshop.GOT-enabled } } GOT = { country_event = 678000 } }
+        }
+
+        ai_will_do = { factor = 0 }
+    }
+
+    country-workshop.country-everything = {
+        alert = no
+
+        potential = {
+            NOT = { year = 1837 }
+            has_country_flag = country-workshop.showing
+
+            NOT = {
+                AND = {
+                    has_global_flag = country-workshop.GOT-enabled
+                }
+            }
+        }
+
+        allow = {
+            NOT = {
+                year = 1837
+                month = 1
+            }
+        }
+
+        effect = {
+            set_global_flag = country-workshop.new-countries
+            random_owned = { limit = { NOT = { has_global_flag = country-workshop.GOT-enabled } } GOT = { country_event = 678000 } }
+        }
+
+        ai_will_do = { factor = 0 }
+    }
+
+    country-workshop.enable-gotland = {
+        picture = country-workshop.enable-gotland
+        alert   = no
+
+        potential = {
+            NOT = { year = 1837 }
+            has_country_flag = country-workshop.showing
+            NOT = { has_global_flag = country-workshop.GOT-enabled }
+        }
+
+        allow = {
+            NOT = {
+                year = 1837
+                month = 1
+            }
+        }
+
+        effect = {
+            set_country_flag = country-workshop.new-start
+            GOT = { country_event = 678000 }
+            clr_country_flag = country-workshop.new-start
+        }
+
+        ai_will_do = { factor = 0 }
+    }
+}

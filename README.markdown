@@ -8,13 +8,13 @@ Build status:
 Description
 -----------
 
-A collection of countries designed on a whim. Sometimes collaboratively, often haphazardly. The main
-appeal is usually the added challenge these countries provide, or putting a fresh twist on an
-existing part of the world.
+A collection of alternative starts and countries designed on a whim. Sometimes collaboratively,
+often haphazardly. The main appeal is usually the added challenge these new starts & countries
+provide, or putting a fresh twist on an existing part of the world.
 
-Please note that the countries or their features are not always based on anything historical or
-historically plausible. It’s fair to consider most of them fantasy countries. See the [feature
-levels](#feature-levels) for a more in-depth explanation.
+Please note that the included countries or their features are not always based on anything
+historical or historically plausible. It’s fair to consider most of them fantasy countries. See the
+[Features](#features) & [Feature List](#feature-list) for a detailed account.
 
 This is a submod for [HFM] and should not be played standalone.
 
@@ -51,23 +51,57 @@ Usage
 
 -->
 
-Feature levels
---------------
+Features
+--------
 
-Feature level   | Description
-:---------------|:-----------:
-Minimal | Cultures & starting cores. **No** historical data, **no** specific content.
-Fantasy | **No** historical data, some non-historical content.
+Category | Description
+--------:|:-----------
+Alternative start | Involves a pre-existing country of HFM. Makes that country playable from 1 January 1836, whereas it would normally have been very unusual or even impossible to do so.
+Minimal country | Cultures & starting cores. **No** historical data, **no** specific content.
+Fantasy country | **No** historical data, some non-historical content.
 
-Additionally any country that is not yet done will be marked as a <dfn>**Work In Progress**</dfn>
-(***WIP***).
-
-Country List
+Feature List
 ------------
+
+Any feature that is not yet complete will be marked as a <dfn>**Work In Progress**</dfn>
+(***WIP***).
 
 Name            | Features  | Cultures (union if applicable)                | Starting cores
 ---------------:|:---------:|:---------------------------------------------:|:-------------:
 Gotland | Minimal (***WIP***) | Swedish (Scandinavia), Estonian | Gotland
+
+Usage
+-----
+
+- Start a new campaign as the country you intend to play, or as any country if you intend to use one
+  of the submod features.
+- Do **not** unpause. While you are allowed to enable any feature during the first month of the
+  game, we really only advise you do so on 1 January 1836.
+- Activate the “Country Workshop: show all decisions” decision. This will display all submod
+  features in the form of individual decisions.
+- You can at any time take the opposite decision to hide all features before they vanish on their
+  own after the first month. This is not permanent, and you can re-activate the display decision at
+  any time during that first month.
+- You can now activate any feature decision to enable that feature. (This cannot be reversed.
+  You have to restart if you activated the wrong decision.)
+- Some features may present you with a follow-up event. This gives you finer control over the
+  feature. Typically for country features this offers you the following choices:
+  * limit them to just cores on the map
+  * release them as a vassal country (this releases from the current owner of the capital province)
+  * release them as an independent country
+  * play them as an independent country
+- There are also umbrella decisions to enable every feature at once. One grants you fine control
+  over each feature, which can result in many event notifications at once. Others apply a given
+  level of control to each country (e.g. releasing each as a vassal), sparing you the follow-ups.
+- You can enable any number of features individually before activating one of the umbrella
+  decisions, to enable all others.
+- Once you have enabled everything you wanted, you may unpause and play. All decisions will
+  disappear by the end of the first month. Have fun!
+
+Note that during a playthrough the submod must be loaded on every subsequent launch of the game. The
+submod is not just needed for the initial decisions, but is also necessary for the new countries it
+adds. Loading a save while missing a mod present during the making of that save has unpredictable
+results.
 
 Art attributions & licences
 ---------------------------
