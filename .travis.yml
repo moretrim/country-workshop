@@ -55,7 +55,7 @@ matrix:
             printf "    %q\n" "${pr_files[@]}"
 
             # run static analysis
-            vic2-companion --color=always --heartbeat --remarks=opinion --base=country-workshop "${pr_files[@]/country-workshop\//}"
+            vic2-companion --color=always --heartbeat --remarks=all --base=country-workshop "${pr_files[@]/country-workshop\//}"
           '
 
     -
@@ -81,7 +81,7 @@ matrix:
             printf "    %q\n" "${commit_files[@]}"
 
             # run static analysis
-            vic2-companion --color=always --heartbeat --remarks=opinion --base=country-workshop "${commit_files[@]/country-workshop\//}"
+            vic2-companion --color=always --heartbeat --remarks=all --base=country-workshop "${commit_files[@]/country-workshop\//}"
           '
 
     -
@@ -97,5 +97,5 @@ matrix:
             set -Eeuo pipefail
 
             # run static analysis
-            vic2-companion --color=always --heartbeat --base=country-workshop .
+            vic2-companion --color=always --heartbeat --remarks=all --base=country-workshop .
           '
