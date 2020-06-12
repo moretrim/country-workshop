@@ -69,6 +69,7 @@ Any feature that is not yet complete will be marked as a <dfn>**Work In Progress
 Name            | Features  | Cultures (union if applicable)                | Starting cores
 ---------------:|:---------:|:---------------------------------------------:|:-------------:
 Gotland | Minimal (***WIP***) | Swedish (Scandinavia), Estonian | Gotland
+Kosakenstadt | Alternative start | Eastern German (*none*) | Saratov
 
 Usage
 -----

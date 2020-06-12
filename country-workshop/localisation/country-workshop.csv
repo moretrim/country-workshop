@@ -23,6 +23,11 @@ country-workshop.enable-gotland_desc;Category: §Rfantasy country§!\nCapital: Got
 country-workshop.enable-gotland.name;Country Workshop: $COUNTRY$ has been enabled;;;;;;;;;;;;;
 country-workshop.enable-gotland.desc;Today is the day $COUNTRY$ makes its mark.;;;;;;;;;;;;;
 country-workshop.enable-gotland.opt0;At last.;;;;;;;;;;;;;
+country-workshop.enable-kosakenstadt_title;Country Workshop: §GKosakenstadt§!;;;;;;;;;;;;;
+country-workshop.enable-kosakenstadt_desc;Category: §Ralternative start§!\nCapital: Saratov\n\nEnable their cores, release them as a vassal country, release them as an independent country, or play them as an independent country.\n\n§YFeatures should only be enabled on the very first day of the game before unpausing, even though the decisions to do so are available throughout the first month of the game.§!;;;;;;;;;;;;;
+country-workshop.enable-kosakenstadt.name;Country Workshop: $COUNTRY$ has been enabled;;;;;;;;;;;;;
+country-workshop.enable-kosakenstadt.desc;Today is the day $COUNTRY$ makes its mark.;;;;;;;;;;;;;
+country-workshop.enable-kosakenstadt.opt0;At last.;;;;;;;;;;;;;
 ## Countries;;;;;;;;;;;;;;
 # ### Model;;;;;;;;;;;;;;
 # #### Names;;;;;;;;;;;;;;

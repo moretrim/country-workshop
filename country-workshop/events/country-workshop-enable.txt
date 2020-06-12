@@ -105,3 +105,106 @@ country_event = {
         ai_will_do = { factor = 0 }
     }
 }
+
+country_event = {
+    id    = 678002
+    title = country-workshop.enable-kosakenstadt.name
+    desc  = country-workshop.enable-kosakenstadt.desc
+
+    is_triggered_only = yes
+
+    immediate = {
+        set_global_flag = country-workshop.VLG-enabled
+
+        # Saratov
+        1037 = {
+            add_core = VLG
+        }
+
+        random_country = {
+            limit = {
+                has_country_flag = country-workshop.new-start
+                tag = FROM
+            }
+
+            country_event = 678003
+        }
+    }
+
+    option = {
+        name = country-workshop.enable-kosakenstadt.opt0
+    }
+}
+
+country_event = {
+    id    = 678003
+    title = country-workshop.new-start.name
+    desc  = country-workshop.new-start.desc
+
+    is_triggered_only = yes
+    allow_multiple_instances = yes
+
+    option = {
+        name = country-workshop.new-start.opt0
+
+        ai_will_do = { factor = 1 }
+    }
+
+    option = {
+        name = country-workshop.new-start.opt1
+
+        FROM = {
+            all_core = {
+                remove_core = RUS
+            }
+        }
+
+        1037 = {
+            owner = {
+                release_vassal = FROM
+            }
+        }
+
+        ai_will_do = { factor = 0 }
+    }
+
+    option = {
+        name = country-workshop.new-start.opt2
+
+        FROM = {
+            all_core = {
+                remove_core = RUS
+            }
+        }
+
+        1037 = {
+            owner = {
+                release_vassal = FROM
+                release_vassal = FROM
+            }
+        }
+
+        ai_will_do = { factor = 0 }
+    }
+
+    option = {
+        name = country-workshop.new-start.opt3
+
+        FROM = {
+            all_core = {
+                remove_core = RUS
+            }
+        }
+
+        1037 = {
+            owner = {
+                release_vassal = FROM
+                release_vassal = FROM
+            }
+        }
+
+        change_tag_no_core_switch = VLG
+
+        ai_will_do = { factor = 0 }
+    }
+}

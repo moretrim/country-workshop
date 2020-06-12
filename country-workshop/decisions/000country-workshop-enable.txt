@@ -8,6 +8,7 @@ political_decisions = {
 
             NOT = {
                 has_global_flag = country-workshop.GOT-enabled
+                has_global_flag = country-workshop.VLG-enabled
             }
         }
 
@@ -35,6 +36,7 @@ political_decisions = {
             NOT = {
                 AND = {
                     has_global_flag = country-workshop.GOT-enabled
+                    has_global_flag = country-workshop.VLG-enabled
                 }
             }
         }
@@ -63,6 +65,7 @@ political_decisions = {
             NOT = {
                 AND = {
                     has_global_flag = country-workshop.GOT-enabled
+                    has_global_flag = country-workshop.VLG-enabled
                 }
             }
         }
@@ -78,6 +81,7 @@ political_decisions = {
             set_country_flag = country-workshop.new-start
 
             random_owned = { limit = { NOT = { has_global_flag = country-workshop.GOT-enabled } } GOT = { country_event = 678000 } }
+            random_owned = { limit = { NOT = { has_global_flag = country-workshop.VLG-enabled } } VLG = { country_event = 678002 } }
 
             clr_country_flag = country-workshop.new-start
         }
@@ -95,6 +99,7 @@ political_decisions = {
             NOT = {
                 AND = {
                     has_global_flag = country-workshop.GOT-enabled
+                    has_global_flag = country-workshop.VLG-enabled
                 }
             }
         }
@@ -108,6 +113,7 @@ political_decisions = {
 
         effect = {
             random_owned = { limit = { NOT = { has_global_flag = country-workshop.GOT-enabled } } GOT = { country_event = 678000 } }
+            random_owned = { limit = { NOT = { has_global_flag = country-workshop.VLG-enabled } } VLG = { country_event = 678002 } }
         }
 
         ai_will_do = { factor = 0 }
@@ -123,6 +129,7 @@ political_decisions = {
             NOT = {
                 AND = {
                     has_global_flag = country-workshop.GOT-enabled
+                    has_global_flag = country-workshop.VLG-enabled
                 }
             }
         }
@@ -137,6 +144,7 @@ political_decisions = {
         effect = {
             set_global_flag = country-workshop.new-vassals
             random_owned = { limit = { NOT = { has_global_flag = country-workshop.GOT-enabled } } GOT = { country_event = 678000 } }
+            random_owned = { limit = { NOT = { has_global_flag = country-workshop.VLG-enabled } } VLG = { country_event = 678002 } }
         }
 
         ai_will_do = { factor = 0 }
@@ -152,6 +160,7 @@ political_decisions = {
             NOT = {
                 AND = {
                     has_global_flag = country-workshop.GOT-enabled
+                    has_global_flag = country-workshop.VLG-enabled
                 }
             }
         }
@@ -166,6 +175,7 @@ political_decisions = {
         effect = {
             set_global_flag = country-workshop.new-countries
             random_owned = { limit = { NOT = { has_global_flag = country-workshop.GOT-enabled } } GOT = { country_event = 678000 } }
+            random_owned = { limit = { NOT = { has_global_flag = country-workshop.VLG-enabled } } VLG = { country_event = 678002 } }
         }
 
         ai_will_do = { factor = 0 }
@@ -191,6 +201,32 @@ political_decisions = {
         effect = {
             set_country_flag = country-workshop.new-start
             GOT = { country_event = 678000 }
+            clr_country_flag = country-workshop.new-start
+        }
+
+        ai_will_do = { factor = 0 }
+    }
+
+    country-workshop.enable-kosakenstadt = {
+        picture = country-workshop.enable-kosakenstadt
+        alert   = no
+
+        potential = {
+            NOT = { year = 1837 }
+            has_country_flag = country-workshop.showing
+            NOT = { has_global_flag = country-workshop.VLG-enabled }
+        }
+
+        allow = {
+            NOT = {
+                year = 1837
+                month = 1
+            }
+        }
+
+        effect = {
+            set_country_flag = country-workshop.new-start
+            VLG = { country_event = 678002 }
             clr_country_flag = country-workshop.new-start
         }
 
