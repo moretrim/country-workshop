@@ -104,6 +104,8 @@ Usage
 - There are also umbrella decisions to enable every feature at once. One grants you fine control
   over each feature, which can result in many event notifications at once. Others apply a given
   level of control to each country (e.g. releasing each as a vassal), sparing you the follow-ups.
+- You may only pick one “Play as…” follow-up option when using an umbrella decision. Subsequent
+  picks will have the same effect as the “Independent country…” option.
 - You can enable any number of features individually before activating one of the umbrella
   decisions, to enable all others.
 - Once you have enabled everything you wanted, you may unpause and play. All decisions will
