@@ -114,11 +114,11 @@ submod is not just needed for the initial decisions, but is also necessary for t
 adds. Loading a save while missing a mod present during the making of that save has unpredictable
 results.
 
-Art attributions & licences
----------------------------
+Attributions
+------------
 
-[Attribution & licensing information for the in-game art that this submod uses is
-available.](./licensing.markdown)
+[Attribution information for the title & in-game images that this submod uses is
+available.](./attributions.markdown)
 
 <!-- history TBD
 
