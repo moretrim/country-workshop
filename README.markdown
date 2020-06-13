@@ -1,4 +1,14 @@
-# The Country Workshop
+<p align="center"> <!-- Dear GitHub -->
+<figure>
+<a href="https://github.com/moretrim/country-workshop">
+<img src="./title.jpg" alt="The Country Workshop">
+</a>
+<figcaption>
+<center>
+<h1>The Country Workshop</h1>
+</figcaption>
+</figure>
+</p>
 
 Build status:
 [![travis-master][travis-master-image]](https://travis-ci.org/moretrim/country-workshop/branches)
@@ -8,7 +18,7 @@ Build status:
 Description
 -----------
 
-A collection of alternative starts and countries designed on a whim. Sometimes collaboratively,
+A collection of odd alternative starts and countries designed on a whim. Sometimes collaboratively,
 often haphazardly. The main appeal is usually the added challenge these new starts & countries
 provide, or putting a fresh twist on an existing part of the world.
 

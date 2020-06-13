@@ -1,7 +1,8 @@
 country_event = {
-    id    = 678000
-    title = country-workshop.enable-gotland.name
-    desc  = country-workshop.enable-gotland.desc
+    id      = 678000
+    title   = country-workshop.enable-gotland.name
+    desc    = country-workshop.enable-gotland.desc
+    picture = country-workshop.drawing-board
 
     is_triggered_only = yes
 
@@ -33,10 +34,11 @@ country_event = {
 # option, change the core revocation tag, change the tag in the final option, and reap the benefits
 # of...
 country_event = {
-    id    = 678001
+    id      = 678001
     # ...shared localisation
-    title = country-workshop.new-start.name
-    desc  = country-workshop.new-start.desc
+    title   = country-workshop.new-start.name
+    desc    = country-workshop.new-start.desc
+    picture = country-workshop.drawing-board
 
     is_triggered_only = yes
     allow_multiple_instances = yes
@@ -107,9 +109,10 @@ country_event = {
 }
 
 country_event = {
-    id    = 678002
-    title = country-workshop.enable-kosakenstadt.name
-    desc  = country-workshop.enable-kosakenstadt.desc
+    id      = 678002
+    title   = country-workshop.enable-kosakenstadt.name
+    desc    = country-workshop.enable-kosakenstadt.desc
+    picture = country-workshop.drawing-board
 
     is_triggered_only = yes
 
@@ -137,9 +140,10 @@ country_event = {
 }
 
 country_event = {
-    id    = 678003
-    title = country-workshop.new-start.name
-    desc  = country-workshop.new-start.desc
+    id      = 678003
+    title   = country-workshop.new-start.name
+    desc    = country-workshop.new-start.desc
+    picture = country-workshop.drawing-board
 
     is_triggered_only = yes
     allow_multiple_instances = yes

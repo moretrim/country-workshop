@@ -1,6 +1,7 @@
 political_decisions = {
     country-workshop.show = {
-        alert = no
+        picture = country-workshop.drawing-board
+        alert   = no
 
         potential = {
             NOT = { year = 1837 }
@@ -27,7 +28,8 @@ political_decisions = {
     }
 
     country-workshop.hide = {
-        alert = no
+        picture = country-workshop.drawing-board
+        alert   = no
 
         potential = {
             NOT = { year = 1837 }
@@ -56,7 +58,8 @@ political_decisions = {
     }
 
     country-workshop.start-everything = {
-        alert = no
+        picture = country-workshop.drawing-board
+        alert   = no
 
         potential = {
             NOT = { year = 1837 }
@@ -90,7 +93,8 @@ political_decisions = {
     }
 
     country-workshop.enable-everything = {
-        alert = no
+        picture = country-workshop.drawing-board
+        alert   = no
 
         potential = {
             NOT = { year = 1837 }
@@ -120,7 +124,8 @@ political_decisions = {
     }
 
     country-workshop.vassal-everything = {
-        alert = no
+        picture = country-workshop.drawing-board
+        alert   = no
 
         potential = {
             NOT = { year = 1837 }
@@ -151,7 +156,8 @@ political_decisions = {
     }
 
     country-workshop.country-everything = {
-        alert = no
+        picture = country-workshop.drawing-board
+        alert   = no
 
         potential = {
             NOT = { year = 1837 }
