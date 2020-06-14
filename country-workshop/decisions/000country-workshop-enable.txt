@@ -188,7 +188,7 @@ political_decisions = {
     }
 
     country-workshop.enable-gotland = {
-        picture = country-workshop.enable-gotland
+        picture = country-workshop.gotland-decision
         alert   = no
 
         potential = {
@@ -214,7 +214,7 @@ political_decisions = {
     }
 
     country-workshop.enable-kosakenstadt = {
-        picture = country-workshop.enable-kosakenstadt
+        picture = country-workshop.kosakenstadt-decision
         alert   = no
 
         potential = {
