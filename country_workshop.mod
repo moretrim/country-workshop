@@ -1,2 +1,2 @@
-name = "50: The Country Workshop 1.0 (prerelease)"
+name = "40: The Country Workshop 1.0 (prerelease)"
 path = "mod/country-workshop"
