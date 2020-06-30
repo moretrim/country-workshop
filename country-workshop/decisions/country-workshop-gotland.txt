@@ -1,0 +1,2061 @@
+political_decisions = {
+    ## Hanseatic Reconquest chain
+
+    country-workshop.reaffirm-baltic-dominance = {
+        picture = country-workshop.gotland-decision
+
+        potential = {
+            # Gotland exclusive for now
+            tag = GOT
+            NOT = { has_country_flag = country-workshop.hanseatic-reconquest-stage0 }
+        }
+
+        allow = {
+            war = no
+
+            naval_statistics = 1
+
+            OR = {
+                has_global_flag = sound_dues_abolished
+                is_canal_enabled = 1
+            }
+        }
+
+        effect = {
+            set_global_flag = country-workshop.hanseatic-reconquest-stage0
+            set_country_flag = country-workshop.hanseatic-reconquest-stage0
+
+            badboy = 4
+
+            add_country_modifier = {
+                name = country-workshop.hanseatic-tooltip0
+                duration = -1
+            }
+
+            # Oesel
+            353 = {
+                owner = {
+                    relation = { who = THIS value = -50 }
+
+                    random_owned = {
+                        limit = { owner = { is_vassal = yes } }
+
+                        owner = {
+                            overlord = {
+                                relation = { who = THIS value = -50 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            # Riga
+            354 = {
+                owner = {
+                    relation = { who = THIS value = -50 }
+
+                    random_owned = {
+                        limit = { owner = { is_vassal = yes } }
+
+                        owner = {
+                            overlord = {
+                                relation = { who = THIS value = -50 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            ## Setup initial stage 0 overlord flags
+
+            # Oesel
+            random_owned = {
+                limit = {
+                    353 = { owner = { is_vassal = yes } }
+                }
+
+                353 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord0
+                        }
+                    }
+                }
+            }
+
+            # Riga
+            random_owned = {
+                limit = {
+                    354 = { owner = { is_vassal = yes } }
+                }
+
+                354 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord0
+                        }
+                    }
+                }
+            }
+        }
+
+        ai_will_do = {
+            factor = 1
+
+            modifier = {
+                factor = 0
+
+                badboy = 0.84
+            }
+        }
+    }
+
+    country-workshop.open-svealand = {
+        picture = country-workshop.gotland-decision
+
+        potential = {
+            has_country_flag = country-workshop.hanseatic-reconquest-stage0
+            NOT = { has_country_flag = country-workshop.hanseatic-reconquest-stage1 }
+        }
+
+        allow = {
+            war = no
+
+            # Oesel
+            353 = { OR = { owner = { tag = THIS } owner = { vassal_of = THIS } } }
+            # Riga
+            354 = { OR = { owner = { tag = THIS } owner = { vassal_of = THIS } } }
+
+            nationalism_n_imperialism = 1
+            the_historical_theory = 1
+        }
+
+        effect = {
+            set_country_flag = country-workshop.hanseatic-reconquest-stage1
+
+            badboy = 2
+
+            # Malmoe
+            SWE_334 = { add_core = THIS }
+
+            # Kalmar
+            332 = {
+                owner = {
+                    relation = { who = THIS value = -50 }
+
+                    # no overlord diplomatic penalty because this decision only allows the use of a
+                    # regular core CB, which doesn't threaten the overlord for hegemony
+                }
+            }
+        }
+
+        ai_will_do = {
+            factor = 1
+
+            modifier = {
+                factor = 0
+
+                badboy = 0.92
+            }
+        }
+    }
+
+    country-workshop.abolish-north-german-trade = {
+        picture = country-workshop.gotland-decision
+
+        potential = {
+            has_country_flag = country-workshop.hanseatic-reconquest-stage1
+            NOT = { has_country_flag = country-workshop.hanseatic-reconquest-stage2 }
+        }
+
+        allow = {
+            war = no
+
+            # Kalmar
+            332 = { OR = { owner = { tag = THIS } owner = { vassal_of = THIS } } }
+
+            economic_responsibility = 1
+        }
+
+        effect = {
+            set_global_flag = country-workshop.hanseatic-reconquest-stage2
+            set_country_flag = country-workshop.hanseatic-reconquest-stage2
+
+            badboy = 10
+
+            remove_country_modifier = country-workshop.hanseatic-tooltip0
+
+            add_country_modifier = {
+                name = country-workshop.hanseatic-tooltip2
+                duration = -1
+            }
+
+            # Koenigsberg
+            695 = {
+                owner = {
+                    relation = { who = THIS value = -50 }
+
+                    random_owned = {
+                        limit = { owner = { is_vassal = yes } }
+
+                        owner = {
+                            overlord = {
+                                relation = { who = THIS value = -50 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            # Danzig
+            690 = {
+                owner = {
+                    relation = { who = THIS value = -50 }
+
+                    random_owned = {
+                        limit = { owner = { is_vassal = yes } }
+
+                        owner = {
+                            overlord = {
+                                relation = { who = THIS value = -50 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            # Luebeck
+            530 = {
+                owner = {
+                    relation = { who = THIS value = -50 }
+
+                    random_owned = {
+                        limit = { owner = { is_vassal = yes } }
+
+                        owner = {
+                            overlord = {
+                                relation = { who = THIS value = -50 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            # Hamburg
+            528 = {
+                owner = {
+                    relation = { who = THIS value = -50 }
+
+                    random_owned = {
+                        limit = { owner = { is_vassal = yes } }
+
+                        owner = {
+                            overlord = {
+                                relation = { who = THIS value = -50 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            # Bremen
+            539 = {
+                owner = {
+                    relation = { who = THIS value = -50 }
+
+                    random_owned = {
+                        limit = { owner = { is_vassal = yes } }
+
+                        owner = {
+                            overlord = {
+                                relation = { who = THIS value = -50 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            ## Setup initial stage 2 overlord flags
+
+            # Koenigsberg
+            random_owned = {
+                limit = {
+                    695 = { owner = { is_vassal = yes } }
+                }
+
+                695 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                        }
+                    }
+                }
+            }
+
+            # Danzig
+            random_owned = {
+                limit = {
+                    690 = { owner = { is_vassal = yes } }
+                }
+
+                690 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                        }
+                    }
+                }
+            }
+
+            # Luebeck
+            random_owned = {
+                limit = {
+                    530 = { owner = { is_vassal = yes } }
+                }
+
+                530 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                        }
+                    }
+                }
+            }
+
+            # Hamburg
+            random_owned = {
+                limit = {
+                    528 = { owner = { is_vassal = yes } }
+                }
+
+                528 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                        }
+                    }
+                }
+            }
+
+            # Bremen
+            random_owned = {
+                limit = {
+                    539 = { owner = { is_vassal = yes } }
+                }
+
+                539 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                        }
+                    }
+                }
+            }
+        }
+
+        ai_will_do = {
+            factor = 1
+
+            modifier = {
+                factor = 0
+
+                badboy = 0.6
+            }
+        }
+    }
+
+    country-workshop.reestablish-the-kontore = {
+        picture = country-workshop.gotland-decision
+
+        potential = {
+            has_country_flag = country-workshop.hanseatic-reconquest-stage2
+            NOT = { has_country_flag = country-workshop.hanseatic-reconquest-stage3 }
+        }
+
+        allow = {
+            war = no
+
+            # Danzig
+            690 = { OR = { owner = { tag = THIS } owner = { vassal_of = THIS } } }
+            # Luebeck
+            530 = { OR = { owner = { tag = THIS } owner = { vassal_of = THIS } } }
+
+            revolution_n_counterrevolution = 1
+        }
+
+        effect = {
+            set_global_flag = country-workshop.hanseatic-reconquest-stage3
+            set_country_flag = country-workshop.hanseatic-reconquest-stage3
+
+            badboy = 8
+
+            remove_country_modifier = country-workshop.hanseatic-tooltip2
+
+            add_country_modifier = {
+                name = country-workshop.hanseatic-tooltip3
+                duration = -1
+            }
+
+            # Luga
+            996 = {
+                owner = {
+                    relation = { who = THIS value = -50 }
+
+                    random_owned = {
+                        limit = { owner = { is_vassal = yes } }
+
+                        owner = {
+                            overlord = {
+                                relation = { who = THIS value = -50 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            # Bergen
+            309 = {
+                owner = {
+                    relation = { who = THIS value = -50 }
+
+                    random_owned = {
+                        limit = { owner = { is_vassal = yes } }
+
+                        owner = {
+                            overlord = {
+                                relation = { who = THIS value = -50 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            # Bruges
+            388 = {
+                owner = {
+                    relation = { who = THIS value = -50 }
+
+                    random_owned = {
+                        limit = { owner = { is_vassal = yes } }
+
+                        owner = {
+                            overlord = {
+                                relation = { who = THIS value = -50 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            # Ipswitch
+            292 = {
+                owner = {
+                    relation = { who = THIS value = -50 }
+
+                    random_owned = {
+                        limit = { owner = { is_vassal = yes } }
+
+                        owner = {
+                            overlord = {
+                                relation = { who = THIS value = -50 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            ## Setup initial stage 3 overlord flags
+
+            # Luga
+            random_owned = {
+                limit = {
+                    996 = { owner = { is_vassal = yes } }
+                }
+
+                996 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord3
+                        }
+                    }
+                }
+            }
+
+            # Bergen
+            random_owned = {
+                limit = {
+                    309 = { owner = { is_vassal = yes } }
+                }
+
+                309 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord3
+                        }
+                    }
+                }
+            }
+
+            # Bruges
+            random_owned = {
+                limit = {
+                    388 = { owner = { is_vassal = yes } }
+                }
+
+                388 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord3
+                        }
+                    }
+                }
+            }
+
+            # Ipswitch
+            random_owned = {
+                limit = {
+                    292 = { owner = { is_vassal = yes } }
+                }
+
+                292 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord3
+                        }
+                    }
+                }
+            }
+        }
+
+        ai_will_do = {
+            factor = 1
+
+            modifier = {
+                factor = 0
+
+                badboy = 0.68
+            }
+        }
+    }
+
+    country-workshop.unite-the-hanseatic-league = {
+        picture = country-workshop.gotland-decision
+
+        potential = {
+            has_country_flag = country-workshop.hanseatic-reconquest-stage3
+            NOT = { has_country_flag = country-workshop.hanseatic-reconquest-stage4 }
+
+            exists = NET
+        }
+
+        allow = {
+            war = no
+            is_vassal = no
+            NOT = { is_disarmed = yes }
+
+            NET = {
+                NOT = {
+                    vassal_of = THIS
+                    in_sphere = THIS
+                    alliance_with = THIS
+                    truce_with = THIS
+                }
+            }
+
+            modern_central_bank_system = 1
+        }
+
+        effect = {
+            set_country_flag = country-workshop.hanseatic-reconquest-stage4
+
+            badboy = 10
+
+            casus_belli = {
+                target = NET
+                type = conquest_any
+                months = 12
+            }
+            war = {
+                target = NET
+                call_ally = yes
+
+                attacker_goal = {
+                    casus_belli = conquest_any
+                }
+            }
+
+            relation = { who = NET value = -400 }
+            random_owned = {
+                limit = { owner = { is_greater_power = yes } }
+                owner = { diplomatic_influence = { who = NET value = -400 } }
+            }
+        }
+
+        ai_will_do = {
+            factor = 1
+
+            modifier = {
+                factor = 0
+
+                badboy = 0.6
+            }
+        }
+    }
+
+    country-workshop.the-hanseatic-league-triumphant = {
+        picture = country-workshop.gotland-decision
+
+        potential = {
+            has_country_flag = country-workshop.hanseatic-reconquest-stage4
+            NOT = { has_country_flag = country-workshop.hanseatic-reconquest-stage5 }
+        }
+
+        allow = {
+            # Amsterdam
+            375 = { OR = { owner = { tag = THIS } owner = { vassal_of = THIS } } }
+
+            mass_politics = 1
+
+            353 = { NOT = { any_core = { NOT = { tag = THIS } } } } # Oesel
+            354 = { NOT = { any_core = { NOT = { tag = THIS } } } } # Riga
+
+            695 = { NOT = { any_core = { NOT = { tag = THIS } } } } # Koenigsberg
+            690 = { NOT = { any_core = { NOT = { tag = THIS } } } } # Danzig
+            530 = { NOT = { any_core = { NOT = { tag = THIS } } } } # Luebeck
+            528 = { NOT = { any_core = { NOT = { tag = THIS } } } } # Hamburg
+            539 = { NOT = { any_core = { NOT = { tag = THIS } } } } # Bremen
+
+            996 = { NOT = { any_core = { NOT = { tag = THIS } } } } # Luga
+            309 = { NOT = { any_core = { NOT = { tag = THIS } } } } # Bergen
+            388 = { NOT = { any_core = { NOT = { tag = THIS } } } } # Bruges
+            292 = { NOT = { any_core = { NOT = { tag = THIS } } } } # Ipswitch
+        }
+
+        effect = {
+            set_country_flag = country-workshop.hanseatic-reconquest-stage5
+
+            add_accepted_culture = north_german
+            add_accepted_culture = dutch
+        }
+
+        ai_will_do = { factor = 1 }
+    }
+
+    ## Hanseatic Reconquest refutation machinery
+
+    # free counter CB to disarm, which is the main refutation requirement
+    country-workshop.hanseatic-challenge = {
+        picture = country-workshop.gotland-decision
+
+        potential = {
+            OR = {
+                AND = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-stage0
+
+                    OR = {
+                        # Oesel
+                        AND = {
+                            owns = 353
+                            353 = { any_core = { NOT = { tag = THIS } } }
+                        }
+
+                        # Riga
+                        AND = {
+                            owns = 354
+                            354 = { any_core = { NOT = { tag = THIS } } }
+                        }
+
+                    }
+                }
+
+                AND = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-stage2
+
+                    OR = {
+                        # Koenigsberg
+                        AND = {
+                            owns = 695
+                            695 = { any_core = { NOT = { tag = THIS } } }
+                        }
+
+                        # Danzig
+                        AND = {
+                            owns = 690
+                            690 = { any_core = { NOT = { tag = THIS } } }
+                        }
+
+                        # Luebeck
+                        AND = {
+                            owns = 530
+                            530 = { any_core = { NOT = { tag = THIS } } }
+                        }
+
+                        # Hamburg
+                        AND = {
+                            owns = 528
+                            528 = { any_core = { NOT = { tag = THIS } } }
+                        }
+
+                        # Bremen
+                        AND = {
+                            owns = 539
+                            539 = { any_core = { NOT = { tag = THIS } } }
+                        }
+
+                    }
+                }
+
+                AND = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-stage3
+
+                    OR = {
+                        # Luga
+                        AND = {
+                            owns = 996
+                            996 = { any_core = { NOT = { tag = THIS } } }
+                        }
+
+                        # Bergen
+                        AND = {
+                            owns = 309
+                            309 = { any_core = { NOT = { tag = THIS } } }
+                        }
+
+                        # Bruges
+                        AND = {
+                            owns = 388
+                            388 = { any_core = { NOT = { tag = THIS } } }
+                        }
+
+                        # Ipswitch
+                        AND = {
+                            owns = 292
+                            292 = { any_core = { NOT = { tag = THIS } } }
+                        }
+                    }
+                }
+            }
+        }
+
+        allow = {
+            war = yes
+            NOT = { has_country_modifier = country-workshop.hanseatic-challenger }
+
+            war_countries = {
+                any_core = {
+                    owned_by = THIS
+
+                    OR = {
+                        AND = {
+                            THIS = {
+                                has_country_flag = country-workshop.hanseatic-reconquest-stage0
+                            }
+
+                            OR = {
+                                province_id = 353 # Oesel
+                                province_id = 354 # Riga
+                            }
+                        }
+
+                        AND = {
+                            THIS = {
+                                has_country_flag = country-workshop.hanseatic-reconquest-stage2
+                            }
+
+                            OR = {
+                                province_id = 695 # Koenigsberg
+                                province_id = 690 # Danzig
+                                province_id = 530 # Luebeck
+                                province_id = 528 # Hamburg
+                                province_id = 539 # Bremen
+                            }
+                        }
+
+                        AND = {
+                            THIS = {
+                                has_country_flag = country-workshop.hanseatic-reconquest-stage3
+                            }
+
+                            OR = {
+                                province_id = 996 # Luga
+                                province_id = 309 # Bergen
+                                province_id = 388 # Bruges
+                                province_id = 292 # Ipswitch
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        effect = {
+            add_country_modifier = {
+                name = country-workshop.hanseatic-challenger
+                duration = 365
+            }
+
+            any_state = {
+                limit = { is_colonial = no }
+
+                any_pop = {
+                    dominant_issue = {
+                        value = jingoism
+                        factor = 0.05
+                    }
+                }
+            }
+
+            any_country = {
+                limit = {
+                    exists = yes
+
+                    OR = {
+                        war_with = THIS
+
+                        AND = {
+                            is_vassal = yes
+                            overlord = { war_with = THIS }
+                        }
+                    }
+
+                    any_core = {
+                        owned_by = THIS
+
+                        OR = {
+                            AND = {
+                                THIS = {
+                                    has_country_flag = country-workshop.hanseatic-reconquest-stage0
+                                }
+
+                                OR = {
+                                    province_id = 353 # Oesel
+                                    province_id = 354 # Riga
+                                }
+                            }
+
+                            AND = {
+                                THIS = {
+                                    has_country_flag = country-workshop.hanseatic-reconquest-stage2
+                                }
+
+                                OR = {
+                                    province_id = 695 # Koenigsberg
+                                    province_id = 690 # Danzig
+                                    province_id = 530 # Luebeck
+                                    province_id = 528 # Hamburg
+                                    province_id = 539 # Bremen
+                                }
+                            }
+
+                            AND = {
+                                THIS = {
+                                    has_country_flag = country-workshop.hanseatic-reconquest-stage3
+                                }
+
+                                OR = {
+                                    province_id = 996 # Luga
+                                    province_id = 309 # Bergen
+                                    province_id = 388 # Bruges
+                                    province_id = 292 # Ipswitch
+                                }
+                            }
+                        }
+                    }
+                }
+
+                random_owned = {
+                    limit = {
+                        owner = {
+                            is_vassal = no
+                        }
+                    }
+
+                    owner = {
+                        add_casus_belli = {
+                            target = THIS
+                            type = cut_down_to_size
+                            months = 12
+                        }
+                    }
+                }
+
+                random_owned = {
+                    limit = {
+                        owner = {
+                            is_vassal = yes
+                            overlord = { war_with = THIS }
+                        }
+                    }
+
+                    owner = {
+                        overlord = {
+                            add_casus_belli = {
+                                target = THIS
+                                type = cut_down_to_size
+                                months = 12
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        ai_will_do = { factor = 1 }
+    }
+
+    # the refutation decisions are split to cope with tooltip overflow
+
+    country-workshop.refute-hanseatic-claims0 = {
+        picture = country-workshop.gotland-decision
+
+        potential = {
+            has_country_flag = country-workshop.hanseatic-reconquest-stage0
+
+            OR = {
+                # Oesel
+                AND = {
+                    owns = 353
+                    353 = { any_core = { NOT = { tag = THIS } } }
+                }
+
+                # Riga
+                AND = {
+                    owns = 354
+                    354 = { any_core = { NOT = { tag = THIS } } }
+                }
+
+            }
+        }
+
+        allow = {
+            war = no
+
+            OR = {
+                # Oesel
+                353 = {
+                    owned_by = THIS
+
+                    any_core = {
+                        OR = {
+                            vassal_of = THIS
+                            in_sphere = THIS
+
+                            AND = {
+                                is_vassal = no
+                                truce_with = THIS
+                                NOT = { war_with = THIS }
+                                is_disarmed = yes
+                            }
+
+                            AND = {
+                                is_vassal = yes
+                                overlord = {
+                                    truce_with = THIS
+                                    NOT = { war_with = THIS }
+                                    is_disarmed = yes
+                                }
+                            }
+
+                            AND = {
+                                exists = no
+                                NOT = { is_cultural_union = yes }
+                            }
+                        }
+                    }
+                }
+
+                # Riga
+                354 = {
+                    owned_by = THIS
+
+                    any_core = {
+                        OR = {
+                            vassal_of = THIS
+                            in_sphere = THIS
+
+                            AND = {
+                                is_vassal = no
+                                truce_with = THIS
+                                NOT = { war_with = THIS }
+                                is_disarmed = yes
+                            }
+
+                            AND = {
+                                is_vassal = yes
+                                overlord = {
+                                    truce_with = THIS
+                                    NOT = { war_with = THIS }
+                                    is_disarmed = yes
+                                }
+                            }
+
+                            AND = {
+                                exists = no
+                                NOT = { is_cultural_union = yes }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        effect = {
+            any_country = {
+                limit = {
+                    OR = {
+                        vassal_of = THIS
+                        in_sphere = THIS
+
+                        AND = {
+                            is_vassal = no
+                            truce_with = THIS
+                            NOT = { war_with = THIS }
+                            is_disarmed = yes
+                        }
+
+                        AND = {
+                            is_vassal = yes
+                            overlord = {
+                                truce_with = THIS
+                                NOT = { war_with = THIS }
+                                is_disarmed = yes
+                            }
+                        }
+
+                        AND = {
+                            exists = no
+                            NOT = { is_cultural_union = yes }
+                        }
+                    }
+
+                    any_core = {
+                        owned_by = THIS
+
+                        OR = {
+                            province_id = 353 # Oesel
+                            province_id = 354 # Riga
+                        }
+                    }
+                }
+
+                country_event = 678100
+                relation = { who = THIS value = -100 }
+            }
+        }
+
+        ai_will_do = { factor = 1 }
+    }
+
+    country-workshop.refute-hanseatic-claims2 = {
+        picture = country-workshop.gotland-decision
+
+        potential = {
+            has_country_flag = country-workshop.hanseatic-reconquest-stage2
+
+            OR = {
+                # Koenigsberg
+                AND = {
+                    owns = 695
+                    695 = { any_core = { NOT = { tag = THIS } } }
+                }
+
+                # Danzig
+                AND = {
+                    owns = 690
+                    690 = { any_core = { NOT = { tag = THIS } } }
+                }
+
+                # Luebeck
+                AND = {
+                    owns = 530
+                    530 = { any_core = { NOT = { tag = THIS } } }
+                }
+
+                # Hamburg
+                AND = {
+                    owns = 528
+                    528 = { any_core = { NOT = { tag = THIS } } }
+                }
+
+                # Bremen
+                AND = {
+                    owns = 539
+                    539 = { any_core = { NOT = { tag = THIS } } }
+                }
+
+            }
+        }
+
+        allow = {
+            war = no
+
+            OR = {
+                # Koenigsberg
+                695 = {
+                    owned_by = THIS
+
+                    any_core = {
+                        OR = {
+                            vassal_of = THIS
+                            in_sphere = THIS
+
+                            AND = {
+                                is_vassal = no
+                                truce_with = THIS
+                                NOT = { war_with = THIS }
+                                is_disarmed = yes
+                            }
+
+                            AND = {
+                                is_vassal = yes
+                                overlord = {
+                                    truce_with = THIS
+                                    NOT = { war_with = THIS }
+                                    is_disarmed = yes
+                                }
+                            }
+
+                            AND = {
+                                exists = no
+                                NOT = { is_cultural_union = yes }
+                            }
+                        }
+                    }
+                }
+
+                # Danzig
+                690 = {
+                    owned_by = THIS
+
+                    any_core = {
+                        OR = {
+                            vassal_of = THIS
+                            in_sphere = THIS
+
+                            AND = {
+                                is_vassal = no
+                                truce_with = THIS
+                                NOT = { war_with = THIS }
+                                is_disarmed = yes
+                            }
+
+                            AND = {
+                                is_vassal = yes
+                                overlord = {
+                                    truce_with = THIS
+                                    NOT = { war_with = THIS }
+                                    is_disarmed = yes
+                                }
+                            }
+
+                            AND = {
+                                exists = no
+                                NOT = { is_cultural_union = yes }
+                            }
+                        }
+                    }
+                }
+
+                # Luebeck
+                530 = {
+                    owned_by = THIS
+
+                    any_core = {
+                        OR = {
+                            vassal_of = THIS
+                            in_sphere = THIS
+
+                            AND = {
+                                is_vassal = no
+                                truce_with = THIS
+                                NOT = { war_with = THIS }
+                                is_disarmed = yes
+                            }
+
+                            AND = {
+                                is_vassal = yes
+                                overlord = {
+                                    truce_with = THIS
+                                    NOT = { war_with = THIS }
+                                    is_disarmed = yes
+                                }
+                            }
+
+                            AND = {
+                                exists = no
+                                NOT = { is_cultural_union = yes }
+                            }
+                        }
+                    }
+                }
+
+                # Hamburg
+                528 = {
+                    owned_by = THIS
+
+                    any_core = {
+                        OR = {
+                            vassal_of = THIS
+                            in_sphere = THIS
+
+                            AND = {
+                                is_vassal = no
+                                truce_with = THIS
+                                NOT = { war_with = THIS }
+                                is_disarmed = yes
+                            }
+
+                            AND = {
+                                is_vassal = yes
+                                overlord = {
+                                    truce_with = THIS
+                                    NOT = { war_with = THIS }
+                                    is_disarmed = yes
+                                }
+                            }
+
+                            AND = {
+                                exists = no
+                                NOT = { is_cultural_union = yes }
+                            }
+                        }
+                    }
+                }
+
+                # Bremen
+                539 = {
+                    owned_by = THIS
+
+                    any_core = {
+                        OR = {
+                            vassal_of = THIS
+                            in_sphere = THIS
+
+                            AND = {
+                                is_vassal = no
+                                truce_with = THIS
+                                NOT = { war_with = THIS }
+                                is_disarmed = yes
+                            }
+
+                            AND = {
+                                is_vassal = yes
+                                overlord = {
+                                    truce_with = THIS
+                                    NOT = { war_with = THIS }
+                                    is_disarmed = yes
+                                }
+                            }
+
+                            AND = {
+                                exists = no
+                                NOT = { is_cultural_union = yes }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        effect = {
+            any_country = {
+                limit = {
+                    OR = {
+                        vassal_of = THIS
+                        in_sphere = THIS
+
+                        AND = {
+                            is_vassal = no
+                            truce_with = THIS
+                            NOT = { war_with = THIS }
+                            is_disarmed = yes
+                        }
+
+                        AND = {
+                            is_vassal = yes
+                            overlord = {
+                                truce_with = THIS
+                                NOT = { war_with = THIS }
+                                is_disarmed = yes
+                            }
+                        }
+
+                        AND = {
+                            exists = no
+                            NOT = { is_cultural_union = yes }
+                        }
+                    }
+
+                    any_core = {
+                        owned_by = THIS
+
+                        OR = {
+                            province_id = 695 # Koenigsberg
+                            province_id = 690 # Danzig
+                            province_id = 530 # Luebeck
+                            province_id = 528 # Hamburg
+                            province_id = 539 # Bremen
+                        }
+                    }
+                }
+
+                country_event = 678100
+                relation = { who = THIS value = -100 }
+            }
+        }
+
+        ai_will_do = { factor = 1 }
+    }
+
+    country-workshop.refute-hanseatic-claims3 = {
+        picture = country-workshop.gotland-decision
+
+        potential = {
+            has_country_flag = country-workshop.hanseatic-reconquest-stage3
+
+            OR = {
+                # Luga
+                AND = {
+                    owns = 996
+                    996 = { any_core = { NOT = { tag = THIS } } }
+                }
+
+                # Bergen
+                AND = {
+                    owns = 309
+                    309 = { any_core = { NOT = { tag = THIS } } }
+                }
+
+                # Bruges
+                AND = {
+                    owns = 388
+                    388 = { any_core = { NOT = { tag = THIS } } }
+                }
+
+                # Ipswitch
+                AND = {
+                    owns = 292
+                    292 = { any_core = { NOT = { tag = THIS } } }
+                }
+            }
+        }
+
+        allow = {
+            war = no
+
+            OR = {
+                # Luga
+                996 = {
+                    owned_by = THIS
+
+                    any_core = {
+                        OR = {
+                            vassal_of = THIS
+                            in_sphere = THIS
+
+                            AND = {
+                                is_vassal = no
+                                truce_with = THIS
+                                NOT = { war_with = THIS }
+                                is_disarmed = yes
+                            }
+
+                            AND = {
+                                is_vassal = yes
+                                overlord = {
+                                    truce_with = THIS
+                                    NOT = { war_with = THIS }
+                                    is_disarmed = yes
+                                }
+                            }
+
+                            AND = {
+                                exists = no
+                                NOT = { is_cultural_union = yes }
+                            }
+                        }
+                    }
+                }
+
+                # Bergen
+                309 = {
+                    owned_by = THIS
+
+                    any_core = {
+                        OR = {
+                            vassal_of = THIS
+                            in_sphere = THIS
+
+                            AND = {
+                                is_vassal = no
+                                truce_with = THIS
+                                NOT = { war_with = THIS }
+                                is_disarmed = yes
+                            }
+
+                            AND = {
+                                is_vassal = yes
+                                overlord = {
+                                    truce_with = THIS
+                                    NOT = { war_with = THIS }
+                                    is_disarmed = yes
+                                }
+                            }
+
+                            AND = {
+                                exists = no
+                                NOT = { is_cultural_union = yes }
+                            }
+                        }
+                    }
+                }
+
+                # Bruges
+                388 = {
+                    owned_by = THIS
+
+                    any_core = {
+                        OR = {
+                            vassal_of = THIS
+                            in_sphere = THIS
+
+                            AND = {
+                                is_vassal = no
+                                truce_with = THIS
+                                NOT = { war_with = THIS }
+                                is_disarmed = yes
+                            }
+
+                            AND = {
+                                is_vassal = yes
+                                overlord = {
+                                    truce_with = THIS
+                                    NOT = { war_with = THIS }
+                                    is_disarmed = yes
+                                }
+                            }
+
+                            AND = {
+                                exists = no
+                                NOT = { is_cultural_union = yes }
+                            }
+                        }
+                    }
+                }
+
+                # Ipswitch
+                292 = {
+                    owned_by = THIS
+
+                    any_core = {
+                        OR = {
+                            vassal_of = THIS
+                            in_sphere = THIS
+
+                            AND = {
+                                is_vassal = no
+                                truce_with = THIS
+                                NOT = { war_with = THIS }
+                                is_disarmed = yes
+                            }
+
+                            AND = {
+                                is_vassal = yes
+                                overlord = {
+                                    truce_with = THIS
+                                    NOT = { war_with = THIS }
+                                    is_disarmed = yes
+                                }
+                            }
+
+                            AND = {
+                                exists = no
+                                NOT = { is_cultural_union = yes }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        effect = {
+            any_country = {
+                limit = {
+                    OR = {
+                        vassal_of = THIS
+                        in_sphere = THIS
+
+                        AND = {
+                            is_vassal = no
+                            truce_with = THIS
+                            NOT = { war_with = THIS }
+                            is_disarmed = yes
+                        }
+
+                        AND = {
+                            is_vassal = yes
+                            overlord = {
+                                truce_with = THIS
+                                NOT = { war_with = THIS }
+                                is_disarmed = yes
+                            }
+                        }
+
+                        AND = {
+                            exists = no
+                            NOT = { is_cultural_union = yes }
+                        }
+                    }
+
+                    any_core = {
+                        owned_by = THIS
+
+                        OR = {
+                            province_id = 996 # Luga
+                            province_id = 309 # Bergen
+                            province_id = 388 # Bruges
+                            province_id = 292 # Ipswitch
+                        }
+                    }
+                }
+
+                country_event = 678100
+                relation = { who = THIS value = -100 }
+            }
+        }
+
+        ai_will_do = { factor = 1 }
+    }
+
+    ## CB machinery
+
+    # Flag overlords
+    country-workshop.set-hanseatic-reconquest-overlords = {
+        picture = country-workshop.gotland-decision
+
+        potential = {
+            ai = yes
+            # for fluff
+            capital_scope = { continent = europe }
+
+            OR = {
+                # Oesel
+                353 = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage0
+                    owner = {
+                        is_vassal = yes
+                        overlord = {
+                            NOT = {
+                                has_country_flag = country-workshop.hanseatic-reconquest-overlord0
+                            }
+                        }
+                    }
+                }
+
+                # Riga
+                354 = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage0
+                    owner = {
+                        is_vassal = yes
+                        overlord = {
+                            NOT = {
+                                has_country_flag = country-workshop.hanseatic-reconquest-overlord0
+                            }
+                        }
+                    }
+                }
+
+                # Koenigsberg
+                695 = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage2
+                    owner = {
+                        is_vassal = yes
+                        overlord = {
+                            NOT = {
+                                has_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                            }
+                        }
+                    }
+                }
+
+                # Danzig
+                690 = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage2
+                    owner = {
+                        is_vassal = yes
+                        overlord = {
+                            NOT = {
+                                has_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                            }
+                        }
+                    }
+                }
+
+                # Luebeck
+                530 = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage2
+                    owner = {
+                        is_vassal = yes
+                        overlord = {
+                            NOT = {
+                                has_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                            }
+                        }
+                    }
+                }
+
+                # Hamburg
+                528 = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage2
+                    owner = {
+                        is_vassal = yes
+                        overlord = {
+                            NOT = {
+                                has_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                            }
+                        }
+                    }
+                }
+
+                # Bremen
+                539 = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage2
+                    owner = {
+                        is_vassal = yes
+                        overlord = {
+                            NOT = {
+                                has_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                            }
+                        }
+                    }
+                }
+
+                # Luga
+                996 = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage3
+                    owner = {
+                        is_vassal = yes
+                        overlord = {
+                            NOT = {
+                                has_country_flag = country-workshop.hanseatic-reconquest-overlord3
+                            }
+                        }
+                    }
+                }
+
+                # Bergen
+                309 = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage3
+                    owner = {
+                        is_vassal = yes
+                        overlord = {
+                            NOT = {
+                                has_country_flag = country-workshop.hanseatic-reconquest-overlord3
+                            }
+                        }
+                    }
+                }
+
+                # Bruges
+                388 = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage3
+                    owner = {
+                        is_vassal = yes
+                        overlord = {
+                            NOT = {
+                                has_country_flag = country-workshop.hanseatic-reconquest-overlord3
+                            }
+                        }
+                    }
+                }
+
+                # Ipswitch
+                292 = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage3
+                    owner = {
+                        is_vassal = yes
+                        overlord = {
+                            NOT = {
+                                has_country_flag = country-workshop.hanseatic-reconquest-overlord3
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        allow = {}
+
+        effect = {
+            random_owned = {
+                limit = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage0
+                    353 = { owner = { is_vassal = yes } }
+                }
+
+                # Oesel
+                353 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord0
+                        }
+                    }
+                }
+            }
+
+            random_owned = {
+                limit = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage0
+                    354 = { owner = { is_vassal = yes } }
+                }
+
+                # Riga
+                354 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord0
+                        }
+                    }
+                }
+            }
+
+            random_owned = {
+                limit = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage2
+                    695 = { owner = { is_vassal = yes } }
+                }
+
+                # Koenigsberg
+                695 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                        }
+                    }
+                }
+            }
+
+            random_owned = {
+                limit = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage2
+                    690 = { owner = { is_vassal = yes } }
+                }
+
+                # Danzig
+                690 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                        }
+                    }
+                }
+            }
+
+            random_owned = {
+                limit = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage2
+                    530 = { owner = { is_vassal = yes } }
+                }
+
+                # Luebeck
+                530 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                        }
+                    }
+                }
+            }
+
+            random_owned = {
+                limit = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage2
+                    528 = { owner = { is_vassal = yes } }
+                }
+
+                # Hamburg
+                528 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                        }
+                    }
+                }
+            }
+
+            random_owned = {
+                limit = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage2
+                    539 = { owner = { is_vassal = yes } }
+                }
+
+                # Bremen
+                539 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                        }
+                    }
+                }
+            }
+
+            random_owned = {
+                limit = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage3
+                    996 = { owner = { is_vassal = yes } }
+                }
+
+                # Luga
+                996 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord3
+                        }
+                    }
+                }
+            }
+
+            random_owned = {
+                limit = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage3
+                    309 = { owner = { is_vassal = yes } }
+                }
+
+                # Bergen
+                309 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord3
+                        }
+                    }
+                }
+            }
+
+            random_owned = {
+                limit = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage3
+                    388 = { owner = { is_vassal = yes } }
+                }
+
+                # Bruges
+                388 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord3
+                        }
+                    }
+                }
+            }
+
+            random_owned = {
+                limit = {
+                    has_global_flag = country-workshop.hanseatic-reconquest-stage3
+                    292 = { owner = { is_vassal = yes } }
+                }
+
+                # Ipswitch
+                292 = {
+                    owner = {
+                        overlord = {
+                            set_country_flag = country-workshop.hanseatic-reconquest-overlord3
+                        }
+                    }
+                }
+            }
+        }
+
+        ai_will_do = { factor = 1 }
+    }
+
+    # Clear flag of former overlords
+    country-workshop.clear-hanseatic-reconquest-overlords = {
+        picture = country-workshop.gotland-decision
+
+        potential = {
+            has_global_flag = country-workshop.hanseatic-reconquest-stage0
+
+            # not AI-only due to scope restrictions in triggers
+            OR = {
+                ai = no
+
+                # for fluff
+                capital_scope = { continent = europe }
+            }
+
+            OR = {
+                AND = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-overlord0
+
+                    353 = { owner = { NOT = { vassal_of = THIS } } } # Oesel
+                    354 = { owner = { NOT = { vassal_of = THIS } } } # Riga
+                }
+
+                AND = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-overlord2
+
+                    695 = { owner = { NOT = { vassal_of = THIS } } } # Koenigsberg
+                    690 = { owner = { NOT = { vassal_of = THIS } } } # Danzig
+                    530 = { owner = { NOT = { vassal_of = THIS } } } # Luebeck
+                    528 = { owner = { NOT = { vassal_of = THIS } } } # Hamburg
+                    539 = { owner = { NOT = { vassal_of = THIS } } } # Bremen
+                }
+
+                AND = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-overlord3
+
+                    996 = { owner = { NOT = { vassal_of = THIS } } } # Luga
+                    309 = { owner = { NOT = { vassal_of = THIS } } } # Bergen
+                    388 = { owner = { NOT = { vassal_of = THIS } } } # Bruges
+                    292 = { owner = { NOT = { vassal_of = THIS } } } # Ipswitch
+                }
+
+                any_neighbor_country = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-overlord0
+
+                    353 = { owner = { is_vassal = no } } # Oesel
+                    354 = { owner = { is_vassal = no } } # Riga
+                }
+
+                any_neighbor_country = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-overlord2
+
+                    695 = { owner = { is_vassal = no } } # Koenigsberg
+                    690 = { owner = { is_vassal = no } } # Danzig
+                    530 = { owner = { is_vassal = no } } # Luebeck
+                    528 = { owner = { is_vassal = no } } # Hamburg
+                    539 = { owner = { is_vassal = no } } # Bremen
+                }
+
+                any_neighbor_country = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-overlord3
+
+                    996 = { owner = { is_vassal = no } } # Luga
+                    309 = { owner = { is_vassal = no } } # Bergen
+                    388 = { owner = { is_vassal = no } } # Bruges
+                    292 = { owner = { is_vassal = no } } # Ipswitch
+                }
+
+                any_greater_power = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-overlord0
+
+                    353 = { owner = { is_vassal = no } } # Oesel
+                    354 = { owner = { is_vassal = no } } # Riga
+                }
+
+                any_greater_power = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-overlord2
+
+                    695 = { owner = { is_vassal = no } } # Koenigsberg
+                    690 = { owner = { is_vassal = no } } # Danzig
+                    530 = { owner = { is_vassal = no } } # Luebeck
+                    528 = { owner = { is_vassal = no } } # Hamburg
+                    539 = { owner = { is_vassal = no } } # Bremen
+                }
+
+                any_greater_power = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-overlord3
+
+                    996 = { owner = { is_vassal = no } } # Luga
+                    309 = { owner = { is_vassal = no } } # Bergen
+                    388 = { owner = { is_vassal = no } } # Bruges
+                    292 = { owner = { is_vassal = no } } # Ipswitch
+                }
+            }
+        }
+
+        allow = {
+        }
+
+        effect = {
+            random_owned = {
+                limit = {
+                    owner = {
+                        has_country_flag = country-workshop.hanseatic-reconquest-overlord0
+
+                        353 = { owner = { NOT = { vassal_of = THIS } } } # Oesel
+                        354 = { owner = { NOT = { vassal_of = THIS } } } # Riga
+                    }
+                }
+
+                owner = {
+                    clr_country_flag = country-workshop.hanseatic-reconquest-overlord0
+                }
+            }
+
+            random_owned = {
+                limit = {
+                    owner = {
+                        has_country_flag = country-workshop.hanseatic-reconquest-overlord2
+
+                        695 = { owner = { NOT = { vassal_of = THIS } } } # Koenigsberg
+                        690 = { owner = { NOT = { vassal_of = THIS } } } # Danzig
+                        530 = { owner = { NOT = { vassal_of = THIS } } } # Luebeck
+                        528 = { owner = { NOT = { vassal_of = THIS } } } # Hamburg
+                        539 = { owner = { NOT = { vassal_of = THIS } } } # Bremen
+                    }
+                }
+
+                owner = {
+                    clr_country_flag = country-workshop.hanseatic-reconquest-overlord2
+                }
+            }
+
+            random_owned = {
+                limit = {
+                    owner = {
+                        has_country_flag = country-workshop.hanseatic-reconquest-overlord3
+
+                        996 = { owner = { NOT = { vassal_of = THIS } } } # Luga
+                        309 = { owner = { NOT = { vassal_of = THIS } } } # Bergen
+                        388 = { owner = { NOT = { vassal_of = THIS } } } # Bruges
+                        292 = { owner = { NOT = { vassal_of = THIS } } } # Ipswitch
+                    }
+                }
+
+                owner = {
+                    clr_country_flag = country-workshop.hanseatic-reconquest-overlord3
+                }
+            }
+
+            any_country = {
+                limit = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-overlord0
+
+                    353 = { owner = { is_vassal = no } } # Oesel
+                    354 = { owner = { is_vassal = no } } # Riga
+                }
+
+                clr_country_flag = country-workshop.hanseatic-reconquest-overlord0
+            }
+
+            any_country = {
+                limit = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-overlord2
+
+                    695 = { owner = { is_vassal = no } } # Koenigsberg
+                    690 = { owner = { is_vassal = no } } # Danzig
+                    530 = { owner = { is_vassal = no } } # Luebeck
+                    528 = { owner = { is_vassal = no } } # Hamburg
+                    539 = { owner = { is_vassal = no } } # Bremen
+                }
+
+                clr_country_flag = country-workshop.hanseatic-reconquest-overlord2
+            }
+
+            any_country = {
+                limit = {
+                    has_country_flag = country-workshop.hanseatic-reconquest-overlord3
+
+                    996 = { owner = { is_vassal = no } } # Luga
+                    309 = { owner = { is_vassal = no } } # Bergen
+                    388 = { owner = { is_vassal = no } } # Bruges
+                    292 = { owner = { is_vassal = no } } # Ipswitch
+                }
+
+                clr_country_flag = country-workshop.hanseatic-reconquest-overlord3
+            }
+        }
+
+        ai_will_do = { factor = 1 }
+    }
+}

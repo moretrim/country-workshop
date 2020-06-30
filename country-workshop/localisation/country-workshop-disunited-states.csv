@@ -41,6 +41,6 @@ country-workshop.restore-the-union.2_desc;The Union remains in tatters. If it is
 NORMAL_country-workshop.war-restore-america-annex;The $ORDER$$FIRST$-$SECOND$ War of American Reunification;;;;;;;;;;;;;
 AGRESSION_country-workshop.war-restore_america_annex;The $ORDER$$FIRST$-$SECOND$ War of American Reunification;;;;;;;;;;;;;
 restore_america_annex;Restore American Order;;;;;;;;;;;;;
-restore_america_annex_short;Annex $RECIPIENT$;;;;;;;;;;;;;
-restore_america_annex_setup;Annex $RECIPIENT$ to restore the §YUnion§!;;;;;;;;;;;;;
 restore_america_annex_desc;Annex an §!American country§! to further the restoration of the §YUnion§!;;;;;;;;;;;;;
+restore_america_annex_setup;Annex $RECIPIENT$ to restore the §YUnion§!;;;;;;;;;;;;;
+restore_america_annex_short;Annex $RECIPIENT$;;;;;;;;;;;;;
