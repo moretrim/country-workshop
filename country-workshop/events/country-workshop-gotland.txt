@@ -1,0 +1,57 @@
+country_event = {
+    id      = 678100
+    title   = country-workshop.lost-hanseatic-claim.name
+    desc    = country-workshop.lost-hanseatic-claim.desc
+    picture = country-workshop.drawing-board
+
+    is_triggered_only = yes
+
+    immediate = {
+        all_core = {
+            limit = {
+                owned_by = FROM
+
+                OR = {
+                    AND = {
+                        FROM = { has_country_flag = country-workshop.hanseatic-reconquest-stage0 }
+
+                        OR = {
+                            province_id = 353 # Oesel
+                            province_id = 354 # Riga
+                        }
+                    }
+
+                    AND = {
+                        FROM = { has_country_flag = country-workshop.hanseatic-reconquest-stage2 }
+
+                        OR = {
+                            province_id = 695 # Koenigsberg
+                            province_id = 690 # Danzig
+                            province_id = 530 # Luebeck
+                            province_id = 528 # Hamburg
+                            province_id = 539 # Bremen
+                        }
+                    }
+
+                    AND = {
+                        FROM = { has_country_flag = country-workshop.hanseatic-reconquest-stage3 }
+
+                        OR = {
+                            province_id = 996 # Luga
+                            province_id = 309 # Bergen
+                            province_id = 388 # Bruges
+                            province_id = 292 # Ipswitch
+                        }
+                    }
+                }
+            }
+
+            FROM = { prestige = 1 }
+            remove_core = THIS
+        }
+    }
+
+    option = {
+        name = country-workshop.lost-hanseatic-claim.opt0
+    }
+}
