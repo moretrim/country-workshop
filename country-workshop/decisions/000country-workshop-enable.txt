@@ -4,7 +4,7 @@ political_decisions = {
         alert   = no
 
         potential = {
-            NOT = { year = 1837 }
+            NOT = { year = 1837 month = 1 }
             NOT = { has_country_flag = country-workshop.showing }
 
             NOT = {
@@ -14,10 +14,7 @@ political_decisions = {
         }
 
         allow = {
-            NOT = {
-                year = 1837
-                month = 1
-            }
+            NOT = { year = 1837 month = 1 }
         }
 
         effect = {
@@ -32,7 +29,7 @@ political_decisions = {
         alert   = no
 
         potential = {
-            NOT = { year = 1837 }
+            NOT = { year = 1837 month = 1 }
             has_country_flag = country-workshop.showing
 
             NOT = {
@@ -44,10 +41,7 @@ political_decisions = {
         }
 
         allow = {
-            NOT = {
-                year = 1837
-                month = 1
-            }
+            NOT = { year = 1837 month = 1 }
         }
 
         effect = {
@@ -62,7 +56,7 @@ political_decisions = {
         alert   = no
 
         potential = {
-            NOT = { year = 1837 }
+            NOT = { year = 1837 month = 1 }
             has_country_flag = country-workshop.showing
 
             NOT = {
@@ -74,10 +68,7 @@ political_decisions = {
         }
 
         allow = {
-            NOT = {
-                year = 1837
-                month = 1
-            }
+            NOT = { year = 1837 month = 1 }
         }
 
         effect = {
@@ -97,7 +88,7 @@ political_decisions = {
         alert   = no
 
         potential = {
-            NOT = { year = 1837 }
+            NOT = { year = 1837 month = 1 }
             has_country_flag = country-workshop.showing
 
             NOT = {
@@ -109,10 +100,7 @@ political_decisions = {
         }
 
         allow = {
-            NOT = {
-                year = 1837
-                month = 1
-            }
+            NOT = { year = 1837 month = 1 }
         }
 
         effect = {
@@ -128,7 +116,7 @@ political_decisions = {
         alert   = no
 
         potential = {
-            NOT = { year = 1837 }
+            NOT = { year = 1837 month = 1 }
             has_country_flag = country-workshop.showing
 
             NOT = {
@@ -140,10 +128,7 @@ political_decisions = {
         }
 
         allow = {
-            NOT = {
-                year = 1837
-                month = 1
-            }
+            NOT = { year = 1837 month = 1 }
         }
 
         effect = {
@@ -160,7 +145,7 @@ political_decisions = {
         alert   = no
 
         potential = {
-            NOT = { year = 1837 }
+            NOT = { year = 1837 month = 1 }
             has_country_flag = country-workshop.showing
 
             NOT = {
@@ -172,10 +157,7 @@ political_decisions = {
         }
 
         allow = {
-            NOT = {
-                year = 1837
-                month = 1
-            }
+            NOT = { year = 1837 month = 1 }
         }
 
         effect = {
@@ -194,16 +176,13 @@ political_decisions = {
         potential = {
             # WIP
             always = no
-            NOT = { year = 1837 }
+            NOT = { year = 1837 month = 1 }
             has_country_flag = country-workshop.showing
             NOT = { has_global_flag = country-workshop.GOT-enabled }
         }
 
         allow = {
-            NOT = {
-                year = 1837
-                month = 1
-            }
+            NOT = { year = 1837 month = 1 }
         }
 
         effect = {
@@ -220,16 +199,13 @@ political_decisions = {
         alert   = no
 
         potential = {
-            NOT = { year = 1837 }
+            NOT = { year = 1837 month = 1 }
             has_country_flag = country-workshop.showing
             NOT = { has_global_flag = country-workshop.VLG-enabled }
         }
 
         allow = {
-            NOT = {
-                year = 1837
-                month = 1
-            }
+            NOT = { year = 1837 month = 1 }
         }
 
         effect = {
