@@ -16,8 +16,8 @@ country_event = {
 
         random_country = {
             limit = {
-                has_country_flag = country-workshop.new-start
                 tag = FROM
+                has_country_flag = country-workshop.new-start
             }
 
             country_event = 678001
@@ -41,7 +41,6 @@ country_event = {
     picture = country-workshop.drawing-board
 
     is_triggered_only = yes
-    allow_multiple_instances = yes
 
     option = {
         name = country-workshop.new-start.opt0
@@ -126,8 +125,8 @@ country_event = {
 
         random_country = {
             limit = {
-                has_country_flag = country-workshop.new-start
                 tag = FROM
+                has_country_flag = country-workshop.new-start
             }
 
             country_event = 678003
@@ -146,7 +145,6 @@ country_event = {
     picture = country-workshop.drawing-board
 
     is_triggered_only = yes
-    allow_multiple_instances = yes
 
     option = {
         name = country-workshop.new-start.opt0
@@ -212,3 +210,5 @@ country_event = {
         ai_will_do = { factor = 0 }
     }
 }
+
+# 678004 & 678005 in country-workshop-disunited-states due to setup complexity

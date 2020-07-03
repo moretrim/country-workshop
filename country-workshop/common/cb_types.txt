@@ -772,6 +772,11 @@ restore_america = {
         }
         is_vassal = no
         neighbour = THIS
+        # Country Workshop: this is a very janky CB regardless
+        OR = {
+            war_with = THIS
+            THIS = { NOT = { has_country_modifier = no_more_war } }
+        }
         any_owned_province = {
             OR = {
                 is_core = USA
