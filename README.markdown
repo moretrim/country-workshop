@@ -78,9 +78,9 @@ Any feature that is not yet complete will be marked as a <dfn>**Work In Progress
 
 Name            | Features  | Cultures (union if applicable) or other details<br>Starting territory
 ---------------:|:---------:|:-----------------------------------------------------------------
+Disunited States | Alternative start | The United States broken up by the Disunited States event.<br>13 possible starting American countries, all of which can restore the Union.<br>Fast forwards through the early historical happenings up to the Gadsden Purchase borders along with the Alaska Purchase.<br>Skips the Civil War.<br>Hawaii starts Westernised.<br>Releases Liberia early.<br>Sets up a couple diplomatic blocs with a very brief truce period.<br>Prevents these AI American countries from peacefully uniting with their American neighbours or the reborn Union.<br>The Treaty of Guadalupe Hidalgo is not signed, and the northern Mexican cores are suspended rather than outright removed. They can return by decision with Nationalism & Imperialism. In the meantime Mexico may engage in proxy wars through the Pueblo Republic.
 Gotland | Minimal (***WIP***) | Cultures: Swedish (Scandinavia), Estonian<br>Start: Gotland
 Kosakenstadt | Alternative start | Cultures: Eastern German (*none*)<br>Start: Saratov
-Disunited States | Alternative start | The United States broken up by the Disunited States event.<br>13 possible starting American countries, all of which can restore the Union.<br>Fast forwards through the early historical happenings up to the Gadsden Purchase borders along with the Alaska Purchase.<br>Skips the Civil War.<br>Hawaii starts Westernised.<br>Releases Liberia early.<br>Sets up a couple diplomatic blocs with a very brief truce period.<br>Prevents these AI American countries from peacefully uniting with their American neighbours or the reborn Union.<br>The Treaty of Guadalupe Hidalgo is not signed, and the northern Mexican cores are suspended rather than outright removed. They can return by decision with Nationalism & Imperialism. In the meantime Mexico may engage in proxy wars through the Pueblo Republic.
 
 Usage
 -----
