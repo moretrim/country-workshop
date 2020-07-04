@@ -1,7 +1,8 @@
 <p align="center"> <!-- Dear GitHub -->
 <figure>
 <a href="https://github.com/moretrim/country-workshop">
-<img src="./title.jpg" alt="The Country Workshop">
+<img src="./title.jpg" alt="Architect at his drawing board. He is pensive, looking not a floor plans
+but at a Victoria 2 map of Europe.">
 </a>
 <figcaption>
 <center>
