@@ -1,7 +1,7 @@
 <p align="center"> <!-- Dear GitHub -->
 <figure>
 <a href="https://github.com/moretrim/country-workshop">
-<img src="./title.jpg" alt="Architect at his drawing board. He is pensive, looking not a floor plans
+<img src="./title.jpg" alt="Architect at his drawing board. He is pensive, looking not at floor plans
 but at a Victoria 2 map of Europe.">
 </a>
 <figcaption>
@@ -77,16 +77,19 @@ Feature List
 Any feature that is not yet complete will be marked as a <dfn>**Work In Progress**</dfn>
 (***WIP***).
 
-Name            | Features  | Cultures (union if applicable) or other details<br>Starting territory
----------------:|:---------:|:-----------------------------------------------------------------
-[Disunited States][FSA-preview] | Alternative start | The United States broken up by the Disunited States event.<br>13 possible starting American countries, all of which can restore the Union.<br>Fast forwards through the early historical happenings up to the Gadsden Purchase borders along with the Alaska Purchase.<br>Skips the Civil War.<br>Hawaii starts Westernised.<br>Releases Liberia early.<br>Sets up a couple diplomatic blocs with a very brief truce period.<br>Prevents these AI American countries from peacefully uniting with their American neighbours or the reborn Union.<br>The Treaty of Guadalupe Hidalgo is not signed, and the northern Mexican cores are suspended rather than outright removed. They can return by decision with Nationalism & Imperialism. In the meantime Mexico may engage in proxy wars through the Pueblo Republic.
-Gotland | Minimal (***WIP***) | Cultures: Swedish (Scandinavia), Estonian<br>Start: Gotland
+Name            | Category  | Features <small>(culture union listed with the primary culture)</small>
+---------------:|:---------:|:-----------------------------------------------------------------------
+[Disunited States][FSA-preview] | Alternative start | The United States broken up by the Disunited States event.<br>13 possible starting American countries, all of which can restore the Union.<br>Fast forwards through the early historical happenings up to the Gadsden Purchase borders along with the Alaska Purchase.<br>Fast forwards some immigration of European soldiers to prop up the less populated Western and Midwestern breakaway countries.<br>Skips the Civil War.<br>Hawaii starts Westernised.<br>Releases Liberia early.<br>Sets up a couple diplomatic blocs with a very brief truce period.<br>Prevents these AI American countries from peacefully uniting with their American neighbours or the reborn Union.<br>The Treaty of Guadalupe Hidalgo is not signed, and the northern Mexican cores are suspended rather than outright removed. They can return by decision with Revolution & Counterrevolution.<br>Reworked American Restoration CBs, with limited uses until Mass Politics.<sup>1</sup>
+Gotland | Minimal country (***WIP***) | Cultures: Swedish (Scandinavia), Estonian<br>Start: Gotland
 Kosakenstadt | Alternative start | Cultures: Eastern German (*none*)<br>Start: Saratov
 
 [FSA-preview]: https://user-images.githubusercontent.com/49937701/86506807-3b5e3400-bdd3-11ea-835a-63d1fed233b0.jpg
 
-Usage
------
+<sup>1</sup>: due to underlying limitations, some or all functionality of this particular feature is
+always enabled as long as the submod is loaded
+
+Detailed usage
+--------------
 
 - Start a new campaign as the country you intend to play, or as any country if you intend to use one
   of the submod features.
@@ -112,8 +115,11 @@ Usage
   picks will have the same effect as the “Independent country…” option.
 - You can enable any number of features individually before activating one of the umbrella
   decisions, to enable all others.
-- Once you have enabled everything you wanted, you may unpause and play. All decisions will
-  disappear by the end of the first month. Have fun!
+- When activated, some features may recommend that you save & reload the campaign at this stage. You
+  should do so after dismissing all outstanding events, but before unpausing. Failure to do so may
+  lead to unpredictable game behaviour.
+- Once you have enabled everything you wanted and optionally reloaded, you may unpause and play. All
+  decisions will disappear by the end of the first month. Have fun!
 
 Note that during a playthrough the submod must be loaded on every subsequent launch of the game. The
 submod is not just needed for the initial decisions, but is also necessary for the new countries it

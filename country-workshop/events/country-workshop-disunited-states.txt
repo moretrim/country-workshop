@@ -1,25 +1,51 @@
 # Most differences from the original Disunited States code are highlighted by comments. Extra
 # couple things:
 #
-# - To compensate for the dire pop numbers outside the East Coast, there are a couple military
-#   adjustments targeting the smaller (esp. Western) countries:
-#   * conscription law set to high
+# - Some pop tweaks are required for this start to work:
+#   * all the breakaway countries are granted the same starting `america_new_world` modifier as the
+#     one the United States starts with (this includes Hawaii, Alaska, Texas)
+#   * European immigration (in the form of soldier pops) is fast-forwarded for the Western and
+#     Miswestern breakaway countries so that they can each sustain a small deterrence force
+#   * some select political reforms are enabled for the Western and Midwestern breakaway countries
+#     to be able to compete for immigration with the East Coast and Texas
+#
+# - To compensate for their low overall ranks and vulnerable starting positions, there are a couple
+#   military adjustments targeting the smaller (esp. Western) countries:
 #   * military stockpile tweaks, granting up to ~10 infantry brigades worth of supplies for 10 years
 #     of war to the most needy countries
-#   * add a couple token "ghost" brigades to serve as a light deterrent to the AI, or equally as
-#     valid to serve as an AI schmuck-bait to get them to start stupid wars (but that's just funny)
+#   * add a couple brigades, which is tricky but together with the pop tweaks & a save/reload should
+#     do the job
 #
 # - The FSA is kept in check in a couple places, as it can easily turn into a powerhouse even in the
 #   inept hands of the AI.
 #
-# - The larger countries (FSA, CSA, NEN) are still given a small stockpile to be able to build 4
-#   brigades worth of infantry. This compensates for the fact that the transfer of Union troops is
+# - The other larger countries (FSA, CSA, NEN) are still given a small stockpile to be able to build
+#   4 brigades worth of infantry. This compensates for the fact that the transfer of Union troops is
 #   seemingly unreliable.
 #
 # - Grant 20k extra cash to every country. Again, to compensate for having to rebuild with low rank.
 #
 # Implementation notes:
 # - The order of executing events is significant, refer to the enabling event.
+# - The soldier pop tweaks have a story of their own:
+#   * the original non-accepted soldier pops in the destination province(s) are moved to a sensible
+#     province (i.e. nearby, preferably in the same state) with a matching pop for merging purpose
+#   * an accepted soldier pop of an appropriate religion is either left, or moved into the
+#     destination province(s)
+#   * European soldiers of the appropriate religion are picked at random and moved to the
+#     destination, and merge into the intended soldier pop or pops
+#   * we forbid bringing soldiers from locations which start with large soldier pops:
+#     - London (300)
+#   * some destinations such as Chicago (New American Alliance) get to have one pop of each religion
+#   * merging can't be performed in Salt Lake City (Deseret) due to the intended soldiers having the
+#     Mormon faith
+#   * moving Protestant soldiers seems to be very, very tricky! if the originating province has both
+#     a Catholic and a Protestant soldier pop, it appears that the game occasionally selects the
+#     Catholic pop *even* when the code calls for specifically selecting Protestant soldiers (this
+#     doesn't seem to be an issue the other way around)
+#   * we circumvent the above issue by only ever picking Protestant soldiers from provinces without
+#     Catholic soldiers present
+#   * this usually means that Protestant moves are smaller per individual pop moved
 # - `random_country` is used in select spots as some effects don't come through to the intended
 #   country otherwise (is this a `change_tag`-style scope invalidation issue? is this because
 #   `immediate` code is extra fussy? who knows). It's also used in other spots even when not
@@ -36,6 +62,10 @@ country_event = {
 
     immediate = {
         set_global_flag = country-workshop.FSA-enabled
+
+        # Due to province transfers some effects cannot be performed here, e.g. province modifiers.
+        # Comments will mention whenever such are instead performed in the appropriate country setup
+        # event.
 
         ## Suspend Mexican cores
         ## California
@@ -155,7 +185,7 @@ country_event = {
                     remove_core = ENG
                 }
             }
-            # original province modifiers moved to country setup event due to stating of colonies
+            # original province modifiers moved to country setup event
             any_owned = {
                 limit = {
                     OR = {
@@ -204,11 +234,34 @@ country_event = {
             }
         }
 
+        ## Fort Vancouver
+        prestige = 2
+        78 = { change_province_name = "Seattle" }
+        79 = { change_province_name = "Olympia" }
+        78 = {
+            any_pop = {
+                limit = {
+                    is_culture_group = native_american
+                }
+                reduce_pop = 0.3
+            }
+        }
+
+        ### The Great New York City Fire
+        # Also set for all breakaway countries because they can reform the Union.
+        set_country_flag = great_new_york_fire
+        # original province modifiers moved to country setup event
+        232 = {
+            any_pop = {
+                consciousness = 1.5
+            }
+        }
+
         ### Bear Flag Revolt
         set_global_flag = bear_flag_revolt
         set_country_flag = annex_california
 
-        ### Mormon exodus
+        ### Mormon Exodus
         # This is performed for the pop effects, in particular bringing Yankee pops over. The extra
         # cores of the original decision are not added, though they are not lost forever: the
         # irredentism decision can add them later.
@@ -235,7 +288,7 @@ country_event = {
         }
 
         97 = {
-            # original province modifiers moved to country setup event due to stating of colonies
+            # original province modifiers moved to country setup event
             any_pop = {
                 limit = { has_pop_culture = native_american_minor }
                 reduce_pop = 0.25
@@ -264,6 +317,18 @@ country_event = {
 
         ## Treaty of Guadalupe Hidalgo
 
+        # These two together control the treaty decision proper, as well as a couple follow-ups. The
+        # former flag is crucial as Manifest Destiny is a prerequisite to many things. The latter is
+        # necessary to block activating the decision that grants the former to begin with.
+        #
+        # It is important that the Manifest Destiny decision is not activated. Its follow-up event
+        # is designed to let AI Mexico give up most of the time, without accounting for present
+        # circumstances. While that is appropriate for a historical start, it definitively is not
+        # here!
+        #
+        # As a consequence we set the same flags for all breakaway countries. It opens the gates to
+        # some of their own decisions/events, and we still have to block the activating decision as
+        # they are all able to reform the Union.
         set_country_flag = hasmanifestdestiny
         set_country_flag = treaty_of_guadalupe_hidalgo
         prestige = 20
@@ -385,6 +450,50 @@ country_event = {
 
         set_global_flag = american_civil_war_has_happened
 
+        ### The Great Chicago Fire
+        # original province modifiers moved to country setup event
+
+        ### The American Frontier
+        # Tragically the original decision is global, even though multiple countries are allowed to
+        # take it, but only mostly affects the country activating it. We end up fast-forwarding the
+        # whole thing.
+        set_global_flag = american_frontier
+
+        # original province modifiers moved to respective country setups
+
+        132 = { life_rating = 5 }
+        136 = { life_rating = 5 }
+        137 = { life_rating = 5 }
+
+        43  = { change_province_name = "Dallas" life_rating = 5 }
+        134 = { change_province_name = "Abilene" }
+        135 = { change_province_name = "Lubbock" }
+        92  = { change_province_name = "Coeur D'Alene" }
+        93  = { change_province_name = "Pocatello" }
+        111 = { change_province_name = "Rock Springs" }
+        130 = { change_province_name = "Tahlequah" }
+        114 = { change_province_name = "Missoula" }
+        115 = { change_province_name = "Great Falls" }
+        116 = { change_province_name = "Billings" }
+        118 = { change_province_name = "Minot" }
+        119 = { change_province_name = "Dickinson" }
+        121 = { change_province_name = "Dupree" }
+        122 = { change_province_name = "Rapid City" }
+        124 = { change_province_name = "North Platte" }
+        125 = { change_province_name = "Hastings" }
+        127 = { change_province_name = "Goodland" }
+        156 = { change_province_name = "Granite Falls" }
+        157 = { change_province_name = "Moorhead" }
+        106 = { change_province_name = "Denver" }
+        131 = { change_province_name = "Oklahoma City" }
+        113 = { change_province_name = "Helena" }
+        117 = { change_province_name = "Bismarck" }
+        120 = { change_province_name = "Sioux Falls" }
+        123 = { change_province_name = "Omaha" }
+        126 = { change_province_name = "Topeka" }
+        155 = { change_province_name = "Minneapolis" }
+        112 = { change_province_name = "Cheyenne" }
+
         ### The Disunited States
 
         # country_event = 95260
@@ -418,6 +527,8 @@ country_event = {
         # D.C. cores last
         2146 = { add_core = FSA add_core = CSA }
 
+        ### Launch A New Start in the Disunited States?
+
         random_country = {
             limit = {
                 tag = FROM
@@ -428,12 +539,11 @@ country_event = {
             country_event = 678005
         }
 
+        # Due to the country switch, the only reliable way to have the Disunited start event reach
+        # player USA (now FSA) is to fire it in the option.
         random_owned = {
-            limit = {
-                USA = { has_country_flag = country-workshop.new-start }
-            }
-
-            FSA = { country_event = 678005 }
+            limit = { USA = { has_country_flag = country-workshop.new-start } }
+            FSA = { set_country_flag = country-workshop.new-start }
         }
     }
 
@@ -446,6 +556,16 @@ country_event = {
         # England. They are otherwise lost, which would necessitate a period of rebuilding troops.
         2146 = { secede_province = CSA }
         FSA = { inherit = USA }
+
+        random_country = {
+            limit = {
+                tag = FSA
+                has_country_flag = country-workshop.new-start
+            }
+
+            clr_country_flag = country-workshop.new-start
+            country_event = 678005
+        }
     }
 }
 
@@ -525,33 +645,304 @@ country_event = {
             random_country = {
                 limit = { tag = UNM }
 
-                capital = 100
-                leadership = 40
-
-                treasury = 20000
-
-                set_country_flag = asked_to_join_csa
-                set_country_flag = asked_to_join_california
-                set_country_flag = asked_to_rejoin_usa
-
-                # Shorter to try & encourage an early war with Texas
-                random_list = {
-                    1 = { add_country_modifier = { name = no_more_war duration = 70 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 75 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 80 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 85 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 90 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 95 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 100 } }
+                set_variable = {
+                    which = country-workshop.american-restoration-CBs
+                    value = 0
                 }
 
-                ## Mexican bloc
-                relation = { who = MEX value = 400 }
-                create_alliance = MEX
+                ## Pop tweaks
+
+                # Merge incoming soldiers into Dixie
+
+                100 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            is_primary_culture = no
+                            is_accepted_culture = no
+                        }
+
+                        move_pop = 101
+                    }
+                }
+
+                # Mobile
+                197 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            has_pop_culture = dixie
+                            has_pop_religion = catholic
+                        }
+
+                        move_pop = 100
+                    }
+                }
+
+                # 3 Catholic pops
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = germanic
+                            is_culture_group = french
+                            is_culture_group = iberian
+                            is_culture_group = italian
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 100
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = germanic
+                            is_culture_group = french
+                            is_culture_group = iberian
+                            is_culture_group = italian
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 100
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = germanic
+                            is_culture_group = french
+                            is_culture_group = iberian
+                            is_culture_group = italian
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 100
+                        }
+                    }
+                }
+
+                # 2 Catholic pops, merge into Mexican
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = germanic
+                            is_culture_group = french
+                            is_culture_group = iberian
+                            is_culture_group = italian
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 105
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = germanic
+                            is_culture_group = french
+                            is_culture_group = iberian
+                            is_culture_group = italian
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 105
+                        }
+                    }
+                }
+
+                ## Immigration reforms
+                political_reform = universal_voting
+                political_reform = population_equal_weight
+                political_reform = free_press
+                political_reform = all_trade_unions
+                political_reform = debtors_prisons
+                social_reform = low_schools
+                social_reform = child_labor_restricted
 
                 ## Military tweaks: big boost
-
-                political_reform = mandatory_service
 
                 # 10 infantry @ 10 years
                 small_arms      = 438
@@ -562,7 +953,36 @@ country_event = {
                 # 3 token brigades
                 sub_unit = { type = infantry value = 100 }
                 sub_unit = { type = infantry value = 100 }
-                sub_unit = { type = infantry value = 100 }
+                sub_unit = { type = infantry value = 105 }
+
+                capital = 100
+                leadership = 40
+
+                treasury = 20000
+
+                add_country_modifier = { name = america_new_world duration = 1825 }
+
+                set_country_flag = great_new_york_fire
+                set_country_flag = hasmanifestdestiny
+                set_country_flag = treaty_of_guadalupe_hidalgo
+                set_country_flag = asked_to_join_csa
+                set_country_flag = asked_to_join_california
+                set_country_flag = asked_to_rejoin_usa
+
+                # Shorter to try & encourage an early war with Texas
+                random_list = {
+                    1 = { add_country_modifier = { name = no_more_war duration = 145 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 150 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 155 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 160 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 165 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 170 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 175 } }
+                }
+
+                ## Mexican bloc
+                relation = { who = MEX value = 400 }
+                create_alliance = MEX
             }
 
             relation             = { who = UNM value = -200 }
@@ -601,30 +1021,423 @@ country_event = {
             random_country = {
                 limit = { tag = UNB }
 
-                capital = 106
-                leadership = 40
-
-                treasury = 20000
-
-                set_country_flag = asked_to_join_fsa
-                set_country_flag = asked_to_join_new_america
-                set_country_flag = asked_to_rejoin_usa
-
-                random_list = {
-                    1 = { add_country_modifier = { name = no_more_war duration = 90 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 95 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 100 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 105 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 110 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 115 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 120 } }
+                set_variable = {
+                    which = country-workshop.american-restoration-CBs
+                    value = 0
                 }
 
-                ## Central bloc set up by UIL
+                ## Pop tweaks
+
+                # Merge incoming soldiers into Yankee
+
+                106 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            is_primary_culture = no
+                            is_accepted_culture = no
+                        }
+
+                        move_pop = 108
+                    }
+                }
+
+                # 4 Protestant pops
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 106
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 106
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 106
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 106
+                        }
+                    }
+                }
+
+                131 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            has_pop_culture = cherokee
+                        }
+
+                        move_pop = 130
+                    }
+                }
+
+                131 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            has_pop_culture = native_american_minor
+                        }
+
+                        move_pop = 129
+                    }
+                }
+
+                # 2 Protestant pops
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 131
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 131
+                        }
+                    }
+                }
+
+                ## Immigration reforms
+                political_reform = universal_voting
+                political_reform = population_equal_weight
+                political_reform = free_press
+                political_reform = all_trade_unions
+                political_reform = debtors_prisons
+                social_reform = low_schools
+                social_reform = child_labor_restricted
 
                 ## Military tweaks: big boost
-
-                political_reform = mandatory_service
 
                 # 10 infantry @ 10 years
                 small_arms      = 438
@@ -635,7 +1448,39 @@ country_event = {
                 # 3 token brigades
                 sub_unit = { type = infantry value = 106 }
                 sub_unit = { type = infantry value = 106 }
-                sub_unit = { type = infantry value = 106 }
+                sub_unit = { type = infantry value = 131 }
+
+                capital = 106
+                leadership = 40
+
+                treasury = 20000
+
+                add_country_modifier = { name = america_new_world duration = 1825 }
+
+                # originally from The American Frontier
+                106 = { add_province_modifier = { name = recently_built_city duration = 180 } }
+                131 = { add_province_modifier = { name = recently_built_city duration = 180 } }
+                123 = { add_province_modifier = { name = recently_built_city duration = 180 } }
+                126 = { add_province_modifier = { name = recently_built_city duration = 180 } }
+
+                set_country_flag = great_new_york_fire
+                set_country_flag = hasmanifestdestiny
+                set_country_flag = treaty_of_guadalupe_hidalgo
+                set_country_flag = asked_to_join_fsa
+                set_country_flag = asked_to_join_new_america
+                set_country_flag = asked_to_rejoin_usa
+
+                random_list = {
+                    1 = { add_country_modifier = { name = no_more_war duration = 165 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 170 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 175 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 180 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 185 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 190 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 195 } }
+                }
+
+                ## Central bloc set up by UIL
             }
 
             relation             = { who = UNB value = -200 }
@@ -674,31 +1519,279 @@ country_event = {
             random_country = {
                 limit = { tag = DAK }
 
-                capital = 122
-                leadership = 40
-
-                treasury = 20000
-
-                set_country_flag = asked_to_join_fsa
-                set_country_flag = asked_to_join_california
-                set_country_flag = asked_to_join_new_america
-                set_country_flag = asked_to_rejoin_usa
-
-                random_list = {
-                    1 = { add_country_modifier = { name = no_more_war duration = 90 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 95 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 100 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 105 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 110 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 115 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 120 } }
+                set_variable = {
+                    which = country-workshop.american-restoration-CBs
+                    value = 0
                 }
 
-                ## Central bloc set up by UIL
+                ## Pop tweaks
+
+                # Merge incoming soldiers into Yankee
+
+                122 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            is_primary_culture = no
+                            is_accepted_culture = no
+                        }
+
+                        move_pop = 120
+                    }
+                }
+
+                # 4 Protestant pops
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 122
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 122
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 122
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 122
+                        }
+                    }
+                }
+
+                ## Immigration reforms
+                political_reform = universal_voting
+                political_reform = population_equal_weight
+                political_reform = free_press
+                political_reform = all_trade_unions
+                political_reform = debtors_prisons
+                social_reform = low_schools
+                social_reform = child_labor_restricted
 
                 ## Military tweaks: big boost
-
-                political_reform = mandatory_service
 
                 # 10 infantry @ 10 years
                 small_arms      = 438
@@ -706,11 +1799,43 @@ country_event = {
                 canned_food     = 2555
                 regular_clothes = 365
 
-                # 4 token brigades
+                # 3 token brigades
                 sub_unit = { type = infantry value = 122 }
                 sub_unit = { type = infantry value = 122 }
                 sub_unit = { type = infantry value = 122 }
-                sub_unit = { type = infantry value = 122 }
+
+                capital = 122
+                leadership = 40
+
+                treasury = 20000
+
+                add_country_modifier = { name = america_new_world duration = 1825 }
+
+                # originally from The American Frontier
+                113 = { add_province_modifier = { name = recently_built_city duration = 180 } }
+                117 = { add_province_modifier = { name = recently_built_city duration = 180 } }
+                120 = { add_province_modifier = { name = recently_built_city duration = 180 } }
+                112 = { add_province_modifier = { name = recently_built_city duration = 180 } }
+
+                set_country_flag = great_new_york_fire
+                set_country_flag = hasmanifestdestiny
+                set_country_flag = treaty_of_guadalupe_hidalgo
+                set_country_flag = asked_to_join_fsa
+                set_country_flag = asked_to_join_california
+                set_country_flag = asked_to_join_new_america
+                set_country_flag = asked_to_rejoin_usa
+
+                random_list = {
+                    1 = { add_country_modifier = { name = no_more_war duration = 165 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 170 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 175 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 180 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 185 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 190 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 195 } }
+                }
+
+                ## Central bloc set up by UIL
             }
 
             relation             = { who = DAK value = -200 }
@@ -750,22 +1875,728 @@ country_event = {
             random_country = {
                 limit = { tag = UIL }
 
+                set_variable = {
+                    which = country-workshop.american-restoration-CBs
+                    value = 0
+                }
+
+                ## Pop tweaks
+
+                # Merge incoming soldiers into Yankee
+
+                # 4 Catholic pops
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = germanic
+                            is_culture_group = french
+                            is_culture_group = iberian
+                            is_culture_group = italian
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 163
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = germanic
+                            is_culture_group = french
+                            is_culture_group = iberian
+                            is_culture_group = italian
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 163
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = germanic
+                            is_culture_group = french
+                            is_culture_group = iberian
+                            is_culture_group = italian
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 163
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = germanic
+                            is_culture_group = french
+                            is_culture_group = iberian
+                            is_culture_group = italian
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 163
+                        }
+                    }
+                }
+
+                # 4 Protestant pops
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 163
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 163
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 163
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 163
+                        }
+                    }
+                }
+
+                # more pops to Saint Louis, to be able to stand up to the FSA and the CSA
+
+                146 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            is_primary_culture = no
+                        }
+
+                        move_pop = 147
+                    }
+                }
+
+                # 3 Protestant pops
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 146
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 146
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 146
+                        }
+                    }
+                }
+
+                ## Immigration reforms
+                political_reform = universal_voting
+                political_reform = population_equal_weight
+                political_reform = free_press
+                political_reform = all_trade_unions
+                political_reform = debtors_prisons
+                social_reform = low_schools
+                social_reform = child_labor_restricted
+
+                ## Military tweaks: big boost & keep the FSA in check
+
+                political_reform = mandatory_service
+
+                # 10 infantry @ 10 years
+                small_arms      = 438
+                ammunition      = 2738
+                canned_food     = 2555
+                regular_clothes = 365
+
+                # 6 token brigades
+                sub_unit = { type = infantry value = 163 }
+                sub_unit = { type = infantry value = 163 }
+                sub_unit = { type = infantry value = 163 }
+                sub_unit = { type = infantry value = 146 }
+                sub_unit = { type = infantry value = 146 }
+                sub_unit = { type = infantry value = 146 }
+
                 capital = 163
                 leadership = 40
 
                 treasury = 20000
 
+                add_country_modifier = { name = america_new_world duration = 1825 }
+
+                # originally from USA setup
+                163 = { add_province_modifier = { name = small_baby_boom duration = 3650 } }
+
+                # originally from The Great Chicago Fire
+                random_list = {
+                    50 = {
+                        163 = {
+                            add_province_modifier = {
+                                name = rebuilding_city
+                                duration = 90
+                            }
+                        }
+                    }
+                    50 = {
+                        163 = {
+                            add_province_modifier = {
+                                name = rebuilding_city
+                                duration = 60
+                            }
+                        }
+                    }
+                }
+
+                # originally from The American Frontier
+                155 = { add_province_modifier = { name = recently_built_city duration = 180 } }
+
+                set_country_flag = great_new_york_fire
+                set_country_flag = hasmanifestdestiny
+                set_country_flag = treaty_of_guadalupe_hidalgo
                 set_country_flag = asked_to_join_fsa
                 set_country_flag = asked_to_rejoin_usa
 
                 random_list = {
-                    1 = { add_country_modifier = { name = no_more_war duration = 90 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 95 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 100 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 105 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 110 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 115 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 120 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 165 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 170 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 175 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 180 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 185 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 190 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 195 } }
                 }
 
                 ## Central bloc
@@ -778,24 +2609,7 @@ country_event = {
                     create_alliance = UNB
                 }
 
-                ## Military tweaks: big boost
-
-                political_reform = mandatory_service
-
-                # 10 infantry @ 10 years
-
-                small_arms      = 438
-                ammunition      = 2738
-                canned_food     = 2555
-                regular_clothes = 365
-
-                # 6 token brigades
-                sub_unit = { type = infantry value = 163 }
-                sub_unit = { type = infantry value = 163 }
-                sub_unit = { type = infantry value = 163 }
-                sub_unit = { type = infantry value = 163 }
-                sub_unit = { type = infantry value = 163 }
-                sub_unit = { type = infantry value = 163 }
+                ## also involved in the courting of New England
             }
 
             relation             = { who = UIL value = -200 }
@@ -845,31 +2659,44 @@ country_event = {
             random_country = {
                 limit = { tag = CSA }
 
+                set_variable = {
+                    which = country-workshop.american-restoration-CBs
+                    value = 0
+                }
+
                 capital = 60
                 leadership = 40
 
                 treasury = 20000
 
-                random_list = {
-                    1 = { add_country_modifier = { name = no_more_war duration = 90 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 95 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 100 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 105 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 110 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 115 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 120 } }
-                }
+                add_country_modifier = { name = america_new_world duration = 1825 }
 
-                ## Southern bloc
-                relation = { who = TEX value = 400 }
-                create_alliance = TEX
+                set_country_flag = great_new_york_fire
+                set_country_flag = hasmanifestdestiny
+                set_country_flag = treaty_of_guadalupe_hidalgo
 
-                ## Military tweaks
+                ## Military tweaks: keep the FSA in check
+
+                political_reform = four_year_draft
 
                 # 4 brigades worth
                 small_arms      = 40
                 canned_food     = 40
                 regular_clothes = 40
+
+                random_list = {
+                    1 = { add_country_modifier = { name = no_more_war duration = 165 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 170 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 175 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 180 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 185 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 190 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 195 } }
+                }
+
+                ## Southern bloc
+                relation = { who = TEX value = 400 }
+                create_alliance = TEX
             }
 
             relation             = { who = CSA value = -200 }
@@ -920,30 +2747,44 @@ country_event = {
             random_country = {
                 limit = { tag = FSA }
 
+                set_variable = {
+                    which = country-workshop.american-restoration-CBs
+                    value = 0
+                }
+
                 capital = 223
                 leadership = 40
 
                 treasury = 20000
 
+                add_country_modifier = { name = america_new_world duration = 1825 }
+
+                # originally from The Great New York City Fire
                 random_list = {
-                    1 = { add_country_modifier = { name = no_more_war duration = 90 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 95 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 100 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 105 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 110 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 115 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 120 } }
+                    50 = {
+                        232 = {
+                            add_province_modifier = {
+                                name = rebuilding_city
+                                duration = 90
+                            }
+                        }
+                    }
+                    50 = {
+                        232 = {
+                            add_province_modifier = {
+                                name = rebuilding_city
+                                duration = 60
+                            }
+                        }
+                    }
                 }
 
-                ## Northern bloc
-                relation = { who = NEN value = 400 }
-                create_alliance = NEN
+                set_country_flag = great_new_york_fire
+                set_country_flag = hasmanifestdestiny
+                set_country_flag = treaty_of_guadalupe_hidalgo
 
-                ## Special antagonism with the CSA
-                relation = { who = CSA value = -400 }
-
-                ## Special relationship with Liberia
-                relation = { who = LIB value = 400 }
+                ## Immigration reforms: let the other countries get immigrants
+                political_reform = wealth_weighted_voting
 
                 ## Military tweaks: keep the FSA in check
 
@@ -992,6 +2833,28 @@ country_event = {
                 artillery       = 146
                 # ...for the transports
                 clippper_convoy = 47
+
+                random_list = {
+                    1 = { add_country_modifier = { name = no_more_war duration = 165 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 170 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 175 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 180 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 185 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 190 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 195 } }
+                }
+
+                ## Northern bloc
+                relation = { who = NEN value = 400 }
+                create_alliance = NEN
+
+                ## Special antagonism with the CSA
+                relation = { who = CSA value = -400 }
+
+                ## Special relationship with Liberia
+                relation = { who = LIB value = 400 }
+
+                ## also involved in the courting of New England
             }
 
             relation             = { who = FSA value = -200 }
@@ -1032,10 +2895,472 @@ country_event = {
             random_country = {
                 limit = { tag = UOR }
 
+                set_variable = {
+                    which = country-workshop.american-restoration-CBs
+                    value = 0
+                }
+
+                ## Pop tweaks
+
+                # Merge incoming soldiers into Yankee
+
+                81 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            is_primary_culture = no
+                            is_accepted_culture = no
+                        }
+
+                        move_pop = 83
+                    }
+                }
+                # Plattsburgh
+                240 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers has_pop_culture = yankee has_pop_religion = protestant
+                        }
+                        move_pop = 81
+                    }
+                }
+                USA_81 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            NOT = { has_pop_culture = yankee }
+                            has_pop_religion = protestant
+                        }
+
+                        move_pop = 81
+                    }
+                }
+
+                78 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            is_primary_culture = no
+                            is_accepted_culture = no
+                        }
+
+                        move_pop = 79
+                    }
+                }
+                USA_78 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            NOT = { has_pop_culture = yankee }
+                            has_pop_religion = protestant
+                        }
+
+                        move_pop = 80
+                    }
+                }
+                80 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            has_pop_religion = protestant
+                        }
+
+                        move_pop = 78
+                    }
+                }
+
+                # 4 Protestant pops
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 81
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 81
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 81
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 81
+                        }
+                    }
+                }
+
+                # 2 Protestant pops
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 78
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 78
+                        }
+                    }
+                }
+
+                ## Immigration reforms
+                political_reform = universal_voting
+                political_reform = population_equal_weight
+                political_reform = free_press
+                political_reform = all_trade_unions
+                political_reform = debtors_prisons
+                social_reform = low_schools
+                social_reform = child_labor_restricted
+
+                ## Military tweaks: big boost
+
+                # 10 infantry @ 10 years
+                small_arms      = 438
+                ammunition      = 2738
+                canned_food     = 2555
+                regular_clothes = 365
+
+                # 3 token brigades
+                sub_unit = { type = infantry value = 81 }
+                sub_unit = { type = infantry value = 81 }
+                sub_unit = { type = infantry value = 78 }
+
                 capital = 81
                 leadership = 40
 
                 treasury = 20000
+
+                add_country_modifier = { name = america_new_world duration = 1825 }
 
                 any_owned = {
                     limit = {
@@ -1054,35 +3379,23 @@ country_event = {
                     }
                 }
 
+                set_country_flag = great_new_york_fire
+                set_country_flag = hasmanifestdestiny
+                set_country_flag = treaty_of_guadalupe_hidalgo
                 set_country_flag = asked_to_join_california
                 set_country_flag = asked_to_rejoin_usa
 
                 random_list = {
-                    1 = { add_country_modifier = { name = no_more_war duration = 90 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 95 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 100 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 105 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 110 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 115 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 120 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 165 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 170 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 175 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 180 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 185 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 190 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 195 } }
                 }
 
                 ## Western bloc set up by CAL
-
-                ## Military tweaks: big boost
-
-                political_reform = mandatory_service
-
-                # 10 infantry @ 10 years
-                small_arms      = 438
-                ammunition      = 2738
-                canned_food     = 2555
-                regular_clothes = 365
-
-                # 3 token brigades
-                sub_unit = { type = infantry value = 81 }
-                sub_unit = { type = infantry value = 81 }
-                sub_unit = { type = infantry value = 81 }
             }
 
             relation             = { who = UOR value = -200 }
@@ -1118,42 +3431,313 @@ country_event = {
             random_country = {
                 limit = { tag = DES }
 
+                set_variable = {
+                    which = country-workshop.american-restoration-CBs
+                    value = 0
+                }
+
+                ## Pop tweaks
+
+                97 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            is_primary_culture = no
+                            is_accepted_culture = no
+                        }
+
+                        move_pop = 98
+                    }
+
+                    # We can't really merge into Mormon Yankee pops, so normal assimilation will
+                    # have to do the job instead. We give it a slight boost.
+                    add_province_modifier = {
+                        name = gateway_to_america
+                        duration = 3650
+                    }
+                }
+
+                # 4 Protestant pops
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 97
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 97
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 97
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 97
+                        }
+                    }
+                }
+
                 set_country_flag = usstatehood_we_have_applied
                 # Country Workshop executive decision: keep Deseret a theocracy
                 # political_reform = universal_voting
                 # political_reform = population_equal_weight
                 # political_reform = yes_meeting
                 # political_reform = free_press
-                political_reform = non_socialist
-                # political_reform = secret_ballots
+                # political_reform = non_socialist
                 capital = 97
                 leadership = 40
 
                 treasury = 20000
 
-                # from Mormon Exodus
+                add_country_modifier = { name = america_new_world duration = 1825 }
+
+                # originally from Mormon Exodus
                 97 = {
                     add_province_modifier = { name = home_of_the_mormons duration = 10950 }
                 }
 
+                # originally from The American Frontier
+                97 = { add_province_modifier = { name = recently_built_city duration = 730 } }
+                96 = { add_province_modifier = { name = recently_built_city duration = 730 } }
+
+                set_country_flag = great_new_york_fire
+                set_country_flag = hasmanifestdestiny
+                set_country_flag = treaty_of_guadalupe_hidalgo
                 set_country_flag = asked_to_join_california
                 set_country_flag = asked_to_rejoin_usa
 
-                random_list = {
-                    1 = { add_country_modifier = { name = no_more_war duration = 90 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 95 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 100 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 105 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 110 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 115 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 120 } }
-                }
-
-                ## Western bloc set up by CAL
+                ## Immigration reforms
+                # political_reform = universal_voting
+                # political_reform = population_equal_weight
+                political_reform = free_press
+                political_reform = all_trade_unions
+                political_reform = debtors_prisons
+                social_reform = low_schools
+                social_reform = child_labor_restricted
 
                 ## Military tweaks: big boost
-
-                political_reform = mandatory_service
 
                 # 10 infantry @ 10 years
                 small_arms      = 438
@@ -1164,6 +3748,18 @@ country_event = {
                 # 2 token brigades
                 sub_unit = { type = infantry value = 97 }
                 sub_unit = { type = infantry value = 97 }
+
+                random_list = {
+                    1 = { add_country_modifier = { name = no_more_war duration = 165 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 170 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 175 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 180 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 185 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 190 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 195 } }
+                }
+
+                ## Western bloc set up by CAL
             }
 
             relation             = { who = DES value = -200 }
@@ -1198,6 +3794,377 @@ country_event = {
             random_country = {
                 limit = { tag = CAL }
 
+                set_variable = {
+                    which = country-workshop.american-restoration-CBs
+                    value = 0
+                }
+
+                ## Pop tweaks
+
+                # Merge incoming pops into Yankee
+
+                104 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            is_primary_culture = no
+                            is_accepted_culture = no
+                        }
+
+                        move_pop = 88
+                    }
+                }
+
+                any_pop = {
+                    limit = {
+                        type = soldiers
+                        has_pop_culture = yankee
+                        has_pop_religion = protestant
+                    }
+
+                    move_pop = 104
+                }
+
+                # 3 Protestant pops
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 104
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 104
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = british
+                            is_culture_group = germanic
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                            NOT = {
+                                any_pop = {
+                                    type = soldiers
+                                    has_pop_religion = catholic
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                            NOT = {
+                                any_pop = {
+                                   type = soldiers
+                                   has_pop_religion = catholic
+                               }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = protestant
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 104
+                        }
+                    }
+                }
+
+                89 = {
+                    any_pop = {
+                        limit = { type = soldiers has_pop_religion = catholic }
+                        move_pop = 88
+                    }
+                }
+
+                # Springfield
+                167 = {
+                    any_pop = {
+                        limit = {
+                            type = soldiers
+                            has_pop_culture = yankee
+                            has_pop_religion = catholic
+                        }
+
+                        move_pop = 89
+                    }
+                }
+
+                # Merge Mexican soldiers in
+                any_pop = {
+                    limit = {
+                        type = soldiers
+                        has_pop_culture = mexican
+                        has_pop_religion = catholic
+                    }
+
+                    move_pop = 89
+                }
+
+                # 2 Catholic pops
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = germanic
+                            is_culture_group = french
+                            is_culture_group = iberian
+                            is_culture_group = italian
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 89
+                        }
+                    }
+                }
+                random_country = {
+                    limit = {
+                        total_pops = 2000000
+                        capital_scope = { continent = europe }
+                        OR = {
+                            is_culture_group = germanic
+                            is_culture_group = french
+                            is_culture_group = iberian
+                            is_culture_group = italian
+                        }
+
+                        any_owned_province = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+                        }
+                    }
+
+                    random_owned = {
+                        limit = {
+                            NOT = { province_id = 300 }
+                            is_overseas = no
+                            any_pop = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = { is_primary_culture = yes is_accepted_culture = yes }
+                            }
+                        }
+
+                        random_pop = {
+                            limit = {
+                                type = soldiers
+                                has_pop_religion = catholic
+                                OR = {
+                                    is_primary_culture = yes
+                                    is_accepted_culture = yes
+                                }
+                            }
+
+                            move_pop = 89
+                        }
+                    }
+                }
+
+                ## Immigration reforms
+                political_reform = universal_voting
+                political_reform = population_equal_weight
+                political_reform = free_press
+                political_reform = all_trade_unions
+                political_reform = debtors_prisons
+                social_reform = low_schools
+                social_reform = child_labor_restricted
+
+                ## Military tweaks: big boost
+
+                # 10 infantry @ 10 years
+                small_arms      = 438
+                ammunition      = 2738
+                canned_food     = 2555
+                regular_clothes = 365
+
+                # 3 token brigades
+                sub_unit = { type = infantry value = 104 }
+                sub_unit = { type = infantry value = 89  }
+                sub_unit = { type = infantry value = 89  }
+
+                # 1 supply-less token ship
+                sub_unit = { type = manowar value = 84 }
+
                 set_country_flag = usstatehood_we_have_applied
                 ruling_party_ideology = liberal
                 political_reform = universal_voting
@@ -1211,6 +4178,23 @@ country_event = {
 
                 treasury = 20000
 
+                add_country_modifier = { name = america_new_world duration = 1825 }
+
+                set_country_flag = great_new_york_fire
+                set_country_flag = hasmanifestdestiny
+                set_country_flag = treaty_of_guadalupe_hidalgo
+                set_country_flag = asked_to_rejoin_usa
+
+                random_list = {
+                    1 = { add_country_modifier = { name = no_more_war duration = 165 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 170 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 175 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 180 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 185 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 190 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 195 } }
+                }
+
                 ## Western bloc
                 relation = { who = UOR value = 400 }
                 relation = { who = DES value = 400 }
@@ -1220,36 +4204,6 @@ country_event = {
                     relation = { who = DES value = 400 }
                     create_alliance = DES
                 }
-
-                set_country_flag = asked_to_rejoin_usa
-
-                random_list = {
-                    1 = { add_country_modifier = { name = no_more_war duration = 90 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 95 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 100 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 105 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 110 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 115 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 120 } }
-                }
-
-                ## Military tweaks: big boost
-
-                political_reform = mandatory_service
-
-                # 10 infantry @ 10 years
-                small_arms      = 438
-                ammunition      = 2738
-                canned_food     = 2555
-                regular_clothes = 365
-
-                # 3 token brigades
-                sub_unit = { type = infantry value = 84 }
-                sub_unit = { type = infantry value = 84 }
-                sub_unit = { type = infantry value = 84 }
-
-                # 1 supply-less token ship
-                sub_unit = { type = manowar value = 84 }
             }
             relation = { who = CAL value = -200 }
             diplomatic_influence = { who = CAL value = -200 }
@@ -1285,6 +4239,11 @@ country_event = {
             random_country = {
                 limit = { tag = TEX }
 
+                set_variable = {
+                    which = country-workshop.american-restoration-CBs
+                    value = 0
+                }
+
                 set_country_flag = usstatehood_we_have_applied
                 ruling_party_ideology = liberal
                 political_reform = universal_voting
@@ -1297,6 +4256,17 @@ country_event = {
                 leadership = 40
 
                 treasury = 20000
+
+                add_country_modifier = { name = america_new_world duration = 1825 }
+
+                # originally set if/when Texas joins the Union
+                any_owned = {
+                    limit = {
+                        has_pop_type = slaves
+                        produces = cotton
+                    }
+                    add_province_modifier = { name = king_cotton duration = -1 }
+                }
 
                 # originally from The Lone Star State
                 all_core = {
@@ -1321,30 +4291,31 @@ country_event = {
                     reduce_pop = 4
                 }
 
+                set_country_flag = great_new_york_fire
+                set_country_flag = hasmanifestdestiny
+                set_country_flag = treaty_of_guadalupe_hidalgo
                 set_country_flag = asked_to_join_csa
                 set_country_flag = asked_to_rejoin_usa
 
-                random_list = {
-                    1 = { add_country_modifier = { name = no_more_war duration = 90 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 95 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 100 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 105 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 110 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 115 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 120 } }
-                }
-
-                ## Southern bloc set up by CSA
-
                 ## Military tweaks: big boost
-
-                political_reform = mandatory_service
 
                 # 10 infantry @ 10 years
                 small_arms      = 438
                 ammunition      = 2738
                 canned_food     = 2555
                 regular_clothes = 365
+
+                random_list = {
+                    1 = { add_country_modifier = { name = no_more_war duration = 165 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 170 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 175 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 180 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 185 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 190 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 195 } }
+                }
+
+                ## Southern bloc set up by CSA
             }
 
             relation             = { who = TEX value = -200 }
@@ -1377,6 +4348,11 @@ country_event = {
             random_country = {
                 limit = { tag = NEN }
 
+                set_variable = {
+                    which = country-workshop.american-restoration-CBs
+                    value = 0
+                }
+
                 set_country_flag = usstatehood_we_have_applied
                 ruling_party_ideology = liberal
                 political_reform = universal_voting
@@ -1390,20 +4366,13 @@ country_event = {
 
                 treasury = 20000
 
+                add_country_modifier = { name = america_new_world duration = 1825 }
+
+                set_country_flag = great_new_york_fire
+                set_country_flag = hasmanifestdestiny
+                set_country_flag = treaty_of_guadalupe_hidalgo
                 set_country_flag = asked_to_join_fsa
                 set_country_flag = asked_to_rejoin_usa
-
-                random_list = {
-                    1 = { add_country_modifier = { name = no_more_war duration = 90 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 95 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 100 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 105 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 110 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 115 } }
-                    1 = { add_country_modifier = { name = no_more_war duration = 120 } }
-                }
-
-                ## Northern bloc set up by FSA
 
                 ## Military tweaks
 
@@ -1418,6 +4387,30 @@ country_event = {
                 199 = { change_controller = CSA }
                 # about 1 year's supplies
                 clippper_convoy = 23
+
+                random_list = {
+                    1 = { add_country_modifier = { name = no_more_war duration = 165 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 170 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 175 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 180 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 185 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 190 } }
+                    1 = { add_country_modifier = { name = no_more_war duration = 195 } }
+                }
+
+                ## Northern bloc set up by FSA
+
+                ## The courting of New England
+                # New England is courted by the New American Alliance, the Free States, and the
+                # United Kingdom
+                UIL = {
+                    relation = { who = NEN value = 400 }
+                    create_alliance = NEN
+                }
+                ENG = {
+                    relation             = { who = NEN value = 100 }
+                    diplomatic_influence = { who = NEN value =  50 }
+                }
             }
 
             relation             = { who = NEN value = -200 }
@@ -1450,6 +4443,11 @@ country_event = {
             random_country = {
                 limit = { tag = LSK }
 
+                set_variable = {
+                    which = country-workshop.american-restoration-CBs
+                    value = 0
+                }
+
                 set_country_flag = usstatehood_we_have_applied
                 primary_culture = yankee
                 add_accepted_culture = dixie
@@ -1467,10 +4465,33 @@ country_event = {
 
                 treasury = 20000
 
+                add_country_modifier = { name = america_new_world duration = 1825 }
+
+                set_country_flag = great_new_york_fire
+                set_country_flag = hasmanifestdestiny
+                set_country_flag = treaty_of_guadalupe_hidalgo
+
+                ## Immigration reforms
+                political_reform = universal_voting
+                political_reform = population_equal_weight
+                political_reform = free_press
+                political_reform = all_trade_unions
+                political_reform = debtors_prisons
+                social_reform = low_schools
+                social_reform = child_labor_restricted
+
                 ## Military tweaks
 
                 # 1 supply-less token ship
                 sub_unit = { type = frigate value = 3 }
+
+                ## Special Pacific relationship set up by Hawaii
+                relation = { who = LSK value = 100 }
+                # Russian interest
+                RUS = {
+                    relation             = { who = HAW value =  50 }
+                    diplomatic_influence = { who = HAW value = 100 }
+                }
             }
 
             relation             = { who = LSK value = -200 }
@@ -1507,6 +4528,11 @@ country_event = {
             random_country = {
                 limit = { tag = HAW }
 
+                set_variable = {
+                    which = country-workshop.american-restoration-CBs
+                    value = 0
+                }
+
                 set_country_flag = usstatehood_we_have_applied
                 primary_culture = yankee
                 add_accepted_culture = polynesian
@@ -1523,6 +4549,12 @@ country_event = {
 
                 treasury = 20000
 
+                add_country_modifier = { name = america_new_world duration = 1825 }
+
+                set_country_flag = great_new_york_fire
+                set_country_flag = hasmanifestdestiny
+                set_country_flag = treaty_of_guadalupe_hidalgo
+
                 # Westernisation effects
                 country_event = 90910
 
@@ -1530,8 +4562,14 @@ country_event = {
                     add_core = USA
                 }
 
-                ## Special Pacific relationship
-                relation = { who = LSK value = 100 }
+                ## Immigration reforms
+                political_reform = universal_voting
+                political_reform = population_equal_weight
+                political_reform = free_press
+                political_reform = all_trade_unions
+                political_reform = debtors_prisons
+                social_reform = low_schools
+                social_reform = child_labor_restricted
 
                 ## Military tweaks
 
@@ -1540,6 +4578,14 @@ country_event = {
 
                 # 1 supply-less token ship
                 sub_unit = { type = clipper_transport value = 658 }
+
+                ## Special Pacific relationship
+                relation = { who = LSK value = 100 }
+                # British interest
+                ENG = {
+                    relation             = { who = HAW value =  50 }
+                    diplomatic_influence = { who = HAW value = 100 }
+                }
             }
 
             relation             = { who = HAW value = -200 }

@@ -1075,6 +1075,7 @@ country_event = {
 		NOT = { tag = TPG }
 		NOT = { tag = MGL }
 		NOT = { tag = DES }
+		NOT = { tag = USA }
 	}
 
 	mean_time_to_happen = { months = 1 }
