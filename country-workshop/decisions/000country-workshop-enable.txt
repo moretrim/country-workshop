@@ -8,9 +8,11 @@ political_decisions = {
             NOT = { has_country_flag = country-workshop.showing }
 
             NOT = {
-                # has_global_flag = country-workshop.GOT-enabled
-                has_global_flag = country-workshop.VLG-enabled
-                has_global_flag = country-workshop.FSA-enabled
+                AND = {
+                    # has_global_flag = country-workshop.GOT-enabled
+                    has_global_flag = country-workshop.VLG-enabled
+                    has_global_flag = country-workshop.FSA-enabled
+                }
             }
         }
 
