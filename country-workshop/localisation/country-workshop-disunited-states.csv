@@ -1,5 +1,12 @@
 ### Header (CP-1252 autodetection: “‘quotes’ in quotes”, „größer”, «ŒUF? —DÉÇU…») ###;English;French;German;Polish;Spanish;Italian;Swedish;Czech;Hungarian;Dutch;Portuguese;Russian;Finnish;
 ## Disunited States start events;;;;;;;;;;;;;;
+country-workshop.disunited-states-start.name;A New Start in the Disunited States?;;;;;;;;;;;;;
+country-workshop.disunited-states-start.desc;\nYou have enabled the Disunited States. Choose in what region to play now.\n§B(You can change your mind after picking a region to come back to this choice.)§!\n\n§RDue to game limitations it is recommended to save & reload after the Disunited States start has completed initialisation and all outstanding events have been dismissed, but before unpausing as your desired country. Failure to do so may lead to a couple oddities and result in American AI countries underperforming in the opening months of the playthrough.§!;;;;;;;;;;;;;
+country-workshop.disunited-states-start.opt0;Their destiny is theirs to make. §B(Keep playing $COUNTRY$.)§!;;;;;;;;;;;;;
+country-workshop.disunited-states-start.opt1;The North awaits. §B(Alaska, Oregon Country, Dakota Republic, New American Alliance.)§!;;;;;;;;;;;;;
+country-workshop.disunited-states-start.opt2;The sun rises in the East. §B(Free States, New England, Liberia.)§!;;;;;;;;;;;;;
+country-workshop.disunited-states-start.opt3;I wish I was in Dixie. §B(Pueblo Republic, Texas, New Confederacy)§!;;;;;;;;;;;;;
+country-workshop.disunited-states-start.opt4;Go West, young man. §B(Hawaii, California Republic, Deseret, Colorado Republic)§!;;;;;;;;;;;;;
 country-workshop.disunited-states-start-north.name;A New Start in the North?;;;;;;;;;;;;;
 country-workshop.disunited-states-start-north.desc;\nYou have chosen to play in the north. Choose what country to play now.\n§B(You can change your mind and return to the region selection choice.)§!\n\n§RDue to game limitations it is recommended to save & reload after the Disunited States start has completed initialisation and all outstanding events have been dismissed, but before unpausing as your desired country. Failure to do so may lead to a couple oddities and result in American AI countries underperforming in the opening months of the playthrough.§!;;;;;;;;;;;;;
 country-workshop.disunited-states-start-north.opt0;I made a mistake, take me back. §B(Return to region selection.)§!;;;;;;;;;;;;;
