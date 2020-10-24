@@ -37,13 +37,6 @@ country-workshop.enable-disunited-states_desc;Category: §Ralternative start§!\n\
 country-workshop.enable-disunited-states.name;Country Workshop: Disunited States has been enabled;;;;;;;;;;;;;
 country-workshop.enable-disunited-states.desc;\nSomething terrible has befallen the union.;;;;;;;;;;;;;
 country-workshop.enable-disunited-states.opt0;We can rebuild it.;;;;;;;;;;;;;
-country-workshop.disunited-states-start.name;A New Start in the Disunited States?;;;;;;;;;;;;;
-country-workshop.disunited-states-start.desc;\nYou have enabled the Disunited States. Choose in what region to play now.\n§B(You can change your mind after picking a region to come back to this choice.)§!\n\n§RDue to game limitations it is recommended to save & reload after the Disunited States start has completed initialisation and all outstanding events have been dismissed, but before unpausing as your desired country. Failure to do so may lead to a couple oddities and result in American AI countries underperforming in the opening months of the playthrough.§!;;;;;;;;;;;;;
-country-workshop.disunited-states-start.opt0;Their destiny is theirs to make. §B(Keep playing $COUNTRY$.)§!;;;;;;;;;;;;;
-country-workshop.disunited-states-start.opt1;The North awaits. §B(Alaska, Oregon Country, Dakota Republic, New American Alliance.)§!;;;;;;;;;;;;;
-country-workshop.disunited-states-start.opt2;The sun rises in the East. §B(Free States, New England, Liberia.)§!;;;;;;;;;;;;;
-country-workshop.disunited-states-start.opt3;I wish I was in Dixie. §B(Pueblo Republic, Texas, New Confederacy)§!;;;;;;;;;;;;;
-country-workshop.disunited-states-start.opt4;Go West, young man. §B(Hawaii, California Republic, Deseret, Colorado Republic)§!;;;;;;;;;;;;;
 ## Countries;;;;;;;;;;;;;;
 # ### Model;;;;;;;;;;;;;;
 # #### Names;;;;;;;;;;;;;;
