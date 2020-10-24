@@ -12,9 +12,9 @@ but at a Victoria 2 map of Europe.">
 </p>
 
 Build status:
-[![travis-master][travis-master-image]](https://travis-ci.org/moretrim/country-workshop/branches)
+[![travis-master][travis-master-image]](https://travis-ci.com/moretrim/country-workshop/branches)
 
-[travis-master-image]: https://travis-ci.org/moretrim/country-workshop.svg?branch=master
+[travis-master-image]: https://travis-ci.com/moretrim/country-workshop.svg?branch=master
 
 Description
 -----------
