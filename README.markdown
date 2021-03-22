@@ -12,9 +12,13 @@ but at a Victoria 2 map of Europe.">
 </p>
 
 Build status:
-[![travis-master][travis-master-image]](https://travis-ci.com/moretrim/country-workshop/branches)
+[![Github Workflow][github-workflow-badge]][github-workflow-dashboard]
 
-[travis-master-image]: https://travis-ci.com/moretrim/country-workshop.svg?branch=master
+[github-workflow-badge]:
+    https://github.com/moretrim/country-workshop/actions/workflows/ci-on-push.yaml/badge.svg
+[github-workflow-dashboard]:
+    https://github.com/moretrim/country-workshop/actions/workflows/ci-on-push.yaml
+    "Github Workflows"
 
 Description
 -----------
