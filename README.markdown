@@ -31,31 +31,27 @@ Please note that the included countries or their features are not always based o
 historical or historically plausible. It’s fair to consider most of them fantasy countries. See the
 [Features](#features) & [Feature List](#feature-list) for a detailed account.
 
-This is a submod for [HFM] and should not be played standalone.
+This is a submod for [ccHFM][] and should not be played standalone.
 
-[HFM]: https://github.com/SighPie/HFM
+[ccHFM]: https://github.com/moretrim/ccHFM
 
 <!-- release & instructions TBD
 
 Installation
 ------------
 
-Since this is a submod, you need the [Historical Flavour Mod][HFM] installed already. Follow
-instructions there to install it if you haven’t already.
+Since this is a submod, you need [ccHFM][] installed already. Follow instructions there to install
+it if you haven’t already.
 
-Grab the [1.0 release].
+Grab the [1.0.0 release].
 
-[1.0 release]: https://github.com/moretrim/country-workshop/releases/tag/v1.0
+[1.0.0 release]: https://github.com/moretrim/country-workshop/releases/tag/v1.0.0
 
 Install this as you would any other mod. When installed properly, the `country_workshop.mod` file
 and the `country-workshop` directory should live side-by-side. In the Victoria 2 launcher you should
-see an entry for the mod:
+see an entry for the mod.
 
 ![launcher](./launcher.jpg)
-
-The `20: ` prefix should ensure that the submod appears *before* the underlying mod. If it doesn’t
-the submod might not work correctly. (For advanced use, this prefix can be modified to tweak load
-order.) Make sure you are loading *both* the submod & [HFM], as indicated by the check marks.
 
 -->
 
@@ -81,13 +77,13 @@ Feature List
 Any feature that is not yet complete will be marked as a <dfn>**Work In Progress**</dfn>
 (***WIP***).
 
-Name            | Category  | Features <small>(culture union listed with the primary culture)</small>
+Start           | Category  | Features <small>(culture union listed with the primary culture)</small>
 ---------------:|:---------:|:-----------------------------------------------------------------------
 [Disunited States][FSA-preview] | Alternative start | <h5>The United States broken up by the Disunited States event.</h5>13 possible starting American countries, all of which can restore the Union.<br>Fast forwards through the early historical happenings up to the Gadsden Purchase borders along with the Alaska Purchase.<br>Fast forwards some immigration of European soldiers to prop up the less populated Western and Midwestern breakaway countries.<br>Skips the Civil War.<br>Hawaii starts Westernised.<br>Releases Liberia early.<br>Sets up a couple diplomatic blocs with a very brief truce period.<br>Prevents these AI American countries from peacefully uniting with their American neighbours or the reborn Union.<br>The Treaty of Guadalupe Hidalgo is not signed, and the northern Mexican cores are suspended rather than outright removed. They can return by decision with Revolution & Counterrevolution.<br>Reworked American Restoration CBs, with limited uses until Mass Politics.<sup>1</sup>
 Gotland | Fantasy country | <h5>The leader of a new Hanseatic League.</h5>Cultures: Swedish (Scandinavia), Estonian<br>Start: Gotland
 Kosakenstadt | Alternative start | <h5>The lone core that is normally added by the *Russify the Baltic States* decision.</h5>Cultures: Eastern German (*none*)<br>Start: Saratov
 
-[FSA-preview]: https://user-images.githubusercontent.com/49937701/86506807-3b5e3400-bdd3-11ea-835a-63d1fed233b0.jpg
+[FSA-preview]: media/disunited-states.jpg?raw=true
 
 <sup>1</sup>: due to underlying limitations, some or all functionality of this particular feature is
 always enabled as long as the submod is loaded
@@ -136,15 +132,13 @@ Attributions
 [Attribution information for the title & in-game images that this submod uses is
 available.](./attributions.markdown)
 
-<!-- history TBD
-
 Release History
 ---------------
 
 ### 1.0
 
-[The original release.][v1.0]
+#### 1.0.0-dev (in development)
 
-[v1.0]: https://github.com/moretrim/shatter/tree/v1.0
+The original release, it targets [ccHFM 1.1.0][].
 
--->
+[ccHFM 1.0.0]: https://github.com/moretrim/ccHFM/releases/tag/v1.1.0
