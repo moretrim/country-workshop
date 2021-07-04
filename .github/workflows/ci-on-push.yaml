@@ -38,7 +38,7 @@ jobs:
             printf "    %q\n" "${commit_files[@]}"
 
             # the static analysis tool uses these for finer analysis
-            scaffolding=(country-workshop/common/cb_types.txt)
+            scaffolding=()
 
             # run static analysis
             vic2-companion --color=always --heartbeat --remarks=opinion "${scaffolding[@]}" "${commit_files[@]}"
