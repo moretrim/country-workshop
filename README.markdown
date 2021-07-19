@@ -79,14 +79,11 @@ Any feature that is not yet complete will be marked as a <dfn>**Work In Progress
 
 Start           | Category  | Features <small>(culture union listed with the primary culture)</small>
 ---------------:|:---------:|:-----------------------------------------------------------------------
-[Disunited States][FSA-preview] | Alternative start | <h5>The United States broken up by the Disunited States event.</h5>13 possible starting American countries, all of which can restore the Union.<br>Fast forwards through the early historical happenings up to the Gadsden Purchase borders along with the Alaska Purchase.<br>Fast forwards some immigration of European soldiers to prop up the less populated Western and Midwestern breakaway countries.<br>Skips the Civil War.<br>Hawaii starts Westernised.<br>Releases Liberia early.<br>Sets up a couple diplomatic blocs with a very brief truce period.<br>Prevents these AI American countries from peacefully uniting with their American neighbours or the reborn Union.<br>The Treaty of Guadalupe Hidalgo is not signed, and the northern Mexican cores are suspended rather than outright removed. They can return by decision with Revolution & Counterrevolution.<br>Reworked American Restoration CBs, with limited uses until Mass Politics.<sup>1</sup>
+[Disunited States][FSA-preview] | Alternative start | <h5>The United States broken up by the Disunited States event.</h5>13 possible starting American countries, all of which can restore the Union.<br>Fast forwards through the early historical happenings up to the Gadsden Purchase borders along with the Alaska Purchase.<br>Fast forwards some immigration of European soldiers to prop up the less populated Western and Midwestern breakaway countries.<br>Skips the Civil War.<br>Hawaii starts Westernised.<br>Releases Liberia early.<br>Sets up a couple diplomatic blocs with a very brief truce period.<br>Prevents these AI American countries from peacefully uniting with their American neighbours or the reborn Union.<br>The Treaty of Guadalupe Hidalgo is not signed, and the northern Mexican cores are suspended rather than outright removed. They can return by decision with Revolution & Counterrevolution.<br>Allows tech-gated, limited uses of American Restoration CBs with unlimited uses after Mass Politics.
 Gotland | Fantasy country | <h5>The leader of a new Hanseatic League.</h5>Cultures: Swedish (Scandinavia), Estonian<br>Start: Gotland
 Kosakenstadt | Alternative start | <h5>The lone core that is normally added by the *Russify the Baltic States* decision.</h5>Cultures: Eastern German (*none*)<br>Start: Saratov
 
 [FSA-preview]: media/disunited-states.jpg?raw=true
-
-<sup>1</sup>: due to underlying limitations, some or all functionality of this particular feature is
-always enabled as long as the submod is loaded
 
 Detailed usage
 --------------
@@ -141,4 +138,4 @@ Release History
 
 The original release, it targets [ccHFM 1.1.0][].
 
-[ccHFM 1.0.0]: https://github.com/moretrim/ccHFM/releases/tag/v1.1.0
+[ccHFM 1.1.0]: https://github.com/moretrim/ccHFM/releases/tag/v1.1.0
