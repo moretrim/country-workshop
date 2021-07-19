@@ -1,7 +1,7 @@
 <p align="center"> <!-- Dear GitHub -->
 <figure>
 <a href="https://github.com/moretrim/country-workshop">
-<img src="./title.jpg" alt="Architect at his drawing board. He is pensive, looking not at floor plans
+<img src="media/title.jpg" alt="Architect at his drawing board. He is pensive, looking not at floor plans
 but at a Victoria 2 map of Europe.">
 </a>
 <figcaption>
@@ -34,33 +34,6 @@ historical or historically plausible. It’s fair to consider most of them fanta
 This is a submod for [ccHFM][] and should not be played standalone.
 
 [ccHFM]: https://github.com/moretrim/ccHFM
-
-<!-- release & instructions TBD
-
-Installation
-------------
-
-Since this is a submod, you need [ccHFM][] installed already. Follow instructions there to install
-it if you haven’t already.
-
-Grab the [1.0.0 release].
-
-[1.0.0 release]: https://github.com/moretrim/country-workshop/releases/tag/v1.0.0
-
-Install this as you would any other mod. When installed properly, the `country_workshop.mod` file
-and the `country-workshop` directory should live side-by-side. In the Victoria 2 launcher you should
-see an entry for the mod.
-
-![launcher](./launcher.jpg)
-
--->
-
-<!-- usage TBD
-
-Usage
------
-
--->
 
 Features
 --------
