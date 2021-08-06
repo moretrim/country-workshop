@@ -33,7 +33,7 @@ historical or historically plausible. It’s fair to consider most of them fanta
 
 This is a submod for [ccHFM][] and should not be played standalone.
 
-[ccHFM]: https://github.com/moretrim/ccHFM
+[ccHFM]: https://github.com/moretrim/ccHFM#readme
 
 Features
 --------
@@ -101,6 +101,19 @@ Attributions
 
 [Attribution information for the title & in-game images that this submod uses is
 available.](./attributions.markdown)
+
+Other resources
+---------------
+
+|  |  |
+|-:|:-|
+**[Troubleshooting Guide][]** | Having issues running Victoria II? Try our guide!
+**[ccHFM][]** | The parent mod to this submod
+**[Shatter][]** | Shatter your Victoria II world at any time, with any mod
+
+[Troubleshooting Guide]: https://github.com/moretrim/victoria2-troubleshooting#readme
+[ccHFM]: https://github.com/moretrim/ccHFM#readme
+[Shatter]: https://github.com/moretrim/shatter#readme
 
 Release History
 ---------------
