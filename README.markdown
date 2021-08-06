@@ -20,8 +20,8 @@ Build status:
     https://github.com/moretrim/country-workshop/actions/workflows/ci-on-push.yaml
     "Github Workflows"
 
-Description
------------
+The Country Workshop
+--------------------
 
 A collection of odd alternative starts and countries designed on a whim. Sometimes collaboratively,
 often haphazardly. The main appeal is usually the added challenge these new starts & countries
@@ -34,6 +34,21 @@ historical or historically plausible. It’s fair to consider most of them fanta
 This is a submod for [ccHFM][] and should not be played standalone.
 
 [ccHFM]: https://github.com/moretrim/ccHFM#readme
+
+Installation
+------------
+
+This is a submod, so you should install [the parent mod][] first. After that grab the [1.0.0
+release][].
+
+[the parent mod]: https://github.com/moretrim/ccHFM/releases/
+[1.0.0 release]: https://github.com/moretrim/country-workshop/releases/tag/v1.0.0
+
+Extract the `country-workshop` and `country_workshop.mod` file from the provided archive, and place
+them in your favourite `mod` folder. Both the folder and file must end up side-by-side.
+
+When launching the game, make sure to enable *both* the parent mod and this submod. This includes
+when loading a previous save.
 
 Features
 --------
@@ -120,7 +135,7 @@ Release History
 
 ### 1.0
 
-#### 1.0.0-dev (in development)
+#### 1.0.0
 
 The original release, it targets [ccHFM 1.1.0][].
 
